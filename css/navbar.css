@@ -1,0 +1,63 @@
+body {
+      padding-top: 70px;
+}
+
+
+#date-input {
+      display: inline-block;
+}
+
+#search-type-dropdown {
+      width:110px;
+}
+
+#search-dropdown li {
+      padding-left:10px;
+      padding-right: 10px;
+}
+
+
+.bfh-datepicker-toggle > input[readonly] {
+      background-color: #FFF;
+}
+#to-text{
+      top: 0.5em;
+}
+
+input[type=radio] {
+      display:none;
+}
+
+input[type=radio]:checked +  label {
+      background-color:rgb(255, 84, 84);
+      border-radius: 3px;
+}
+input[type=radio] +  label {
+      width: 90%;
+      background-color: inherit;
+      padding-left:3px;
+      margin-right:3px;
+}
+
+
+
+
+
+.nav-bar-image{
+    height: 25px;
+    
+}
+
+.navbar-default{
+    background-color: #BFBFC0;
+    border-color: #d9d9d9;
+}
+
+.navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+    color: #555;
+    background-color: #969696;
+}
+
+.navbar-right{
+      width: 40%;
+}
