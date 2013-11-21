@@ -1,3 +1,3 @@
 <?php
-echo "Added the URL: "+$_GET["q"]+" to the Mochila Database";
+echo "Add the URL: "+$_GET["q"]+" to the Mochila Database";
 ?>
