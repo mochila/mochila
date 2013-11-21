@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
+<?xml-stylesheet type="text/css"
+  href="chrome://urlgrabber/skin/browserOverlay.css" ?>
+
+<!DOCTYPE overlay SYSTEM
+  "chrome://urlgrabber/locale/browserOverlay.dtd">
+
+<overlay id="mochila-browser-overlay"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript"
+    src="chrome://urlgrabber/content/browserOverlay.js" />
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="urlgrabber-string-bundle"
+      src="chrome://urlgrabber/locale/browserOverlay.properties" />
+  </stringbundleset>
+
+  <menupopup id="menu_ToolsPopup">
+    <menu id="mochila-urlgrabber-menu" label="&mochila.urlgrabber.label;"
+      accesskey="&mochila.urlgrabber.accesskey;"
+      insertbefore="devToolsEndSeparator">
+      <menupopup>
+        <menuitem id="mochila-urlgrabber-menu-item"
+          label="&mochila.urlgrabber.label;"
+          accesskey="&mochila.urlgrabber.accesskey;"
+          oncommand="MochilaChrome.BrowserOverlay.sayHello(event);" />
+      </menupopup>
+    </menu>
+  </menupopup>
+
+  <vbox id="appmenuSecondaryPane">
+    <menu id="mochila-urlgrabber-menu-2" label="&mochila.urlgrabber.label;"
+      accesskey="&mochila.urlgrabber.accesskey;"
+      insertafter="appmenu_addons">
+      <menupopup>
+        <menuitem id="mochila-urlgrabber-menu-item-2"
+          label="&mochila.urlgrabber.label;"
+          accesskey="&mochila.urlgrabber.accesskey;"
+          oncommand="MochilaChrome.BrowserOverlay.sayHello(event);" />
+      </menupopup>
+    </menu>
+  </vbox>
+</overlay>
