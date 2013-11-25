@@ -1,0 +1,11 @@
+#add-dagr-popover {
+     display:none;
+}
+
+#add-dagr-popover-contents button{
+     width: 240px;
+     margin-bottom: 10px;
+}
+
+
+

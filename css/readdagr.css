@@ -1,0 +1,14 @@
+.row {
+     margin-right: 0px;
+}
+
+#metadata-container {
+     padding: 10px;
+     position:fixed;
+     top:56px;
+     width:inherit;
+}
+
+div.form-group div,label {
+     margin-top:10px;
+}

@@ -10,6 +10,7 @@ $baseUrl='/mochila';
 
 <link href="css/navbar.css" rel="stylesheet" type="text/css">
 <link href="css/dagrlist.css" rel="stylesheet" type="text/css">
+<link href="css/popover.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="js/navbar.js"></script>
 

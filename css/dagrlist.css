@@ -9,6 +9,14 @@
       
 }
 
+#dagr-list a {
+     color:inherit; 
+}
+
+#dagr-list span.pull-left {
+     margin-right:10px;
+}
+
 #dagr-list .btn-group{
       top:2em;
       margin-left: auto;
