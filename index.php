@@ -11,7 +11,11 @@
           
           <?php include("html/dagrlist.html"); ?>   
           
+          <?php include("html/add-tag-modal.html"); ?>
+          
           <?php include("footer.inc"); ?>
+          
+          
           
      </body>
 </html>

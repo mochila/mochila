@@ -3,12 +3,7 @@
      <head>
           <title>View your DAGR</title>
           <?php include("header.inc"); ?>
-          <link href="tokenfield/assets/tokenfield-typeahead.css" rel="stylesheet" type="text/css">
-          <link href="tokenfield/bootstrap-tokenfield/bootstrap-tokenfield.css" rel="stylesheet" type="text/css">
           <link rel="stylesheet" href="css/readdagr.css" type="text/css">
-          
-          <script type="text/javascript" src="tokenfield/bootstrap-tokenfield/bootstrap-tokenfield.min.js"></script>
-          <script type="text/javascript" src="tokenfield/assets/typeahead.min.js"></script>
           <script type="text/javascript" src="js/dagrform.js"></script>
      </head>
      <body>
