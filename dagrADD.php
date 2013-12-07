@@ -5,7 +5,7 @@ $dagrTitle = $_GET['title'];
 $dagrTags = $_GET['tags'];
 
 // Generate a GUID
-$dagrGUID = com_create_guid();
+$dagrGUID = "dagrGUIDHERE";
 
 // Get the type of the input (will be HTML)
 $dagrType = 'HTML';
