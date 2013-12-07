@@ -1,4 +1,5 @@
 <?php
+include 'simple_html_dom.php';
 function guid(){
     if (function_exists('com_create_guid')){
         return com_create_guid();
@@ -35,7 +36,10 @@ $dagrPGUID = "ParentGUIDHere";
 /***************************************************************
     Scrap the target URL to get metadata (date,size,author) for the DAGR.
 ***************************************************************/
-/*$metaTags = get_meta_tags($targetURL);
+$html = file_get_html($targetURL);
+echo $html->plaintext
+/*
+// Get the author of the website
 $dagrAuthor = $metaTags['author'];
 
 // Construct the current date (or get the current date)
@@ -72,7 +76,7 @@ $stmt->close();
 $mysqli->close();
 
 //*****************************************************************
-*/
+
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\n";
-echo $responseMessage;
+echo $responseMessage;*/
 ?>
