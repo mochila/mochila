@@ -21,7 +21,7 @@ text_entry.port.on("buttonpressed", function (text) {
 
   // Send a GET request to the mochila server with the url
   var httpRequest = Request({
-    url: "http://mochila.coffeecupcoding.com/dagrADD.php?q="+tabs.activeTab.url+text,
+    url: "http:mochila.coffeecupcoding.com/dagrADD.php?q="+tabs.activeTab.url+text,
     onComplete: function (response) {
       console.log("Received response:"+ response.text);
     }
