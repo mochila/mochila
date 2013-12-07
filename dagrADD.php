@@ -37,16 +37,15 @@ $dagrPGUID = "ParentGUIDHere";
     Scrap the target URL to get metadata (date,size,author) for the DAGR.
 ***************************************************************/
 $html = file_get_html($targetURL);
-echo $html->plaintext
+//echo $html->plaintext
 /*
-// Get the author of the website
-$dagrAuthor = $metaTags['author'];
-
 // Construct the current date (or get the current date)
 $dagrDate = "2010-03-12";
-
+*/
 // Get the size of the html
-$dagrSize = 10;
+$site = file_get_contents($targetURL);
+$dagrSize = strlen($site);
+echo $dagrSize;
 
 // Get the author of the URL
 $dagrAuthor = 'AuthorNameHere';

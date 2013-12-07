@@ -27,7 +27,7 @@ text_entry.port.on("buttonpressed", function (text) {
     }
 
   }).get();
-  
+
   text_entry.hide();
 });
  
