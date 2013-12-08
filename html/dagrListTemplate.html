@@ -1,0 +1,28 @@
+<script id="dagrItemTemplate" type="text/template">
+    <div class="list-group">
+        {{#dagrs}}
+        <div id="{{guid}}" class="dagr-item media list-group-item">
+            <a href="#">
+                <span class="pull-left" href="#">
+                    <img class="media-object" src="images/{{type}}.png" alt="Mochila"/></span>
+                <span class="media-body">
+                    <h1 class="media-heading">{{title}}</h1>
+                </span>
+            </a> 
+            <div href="#" class="pull-right" >
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#add-tag-modal">
+                        <div class="glyphicon glyphicon-tag"></div>
+                        <div><h6>add tag</h6></div>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        <div class="glyphicon glyphicon-trash"></div>
+                        <div><h6>delete</h6></div>
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+        {{/dagrs}}
+    </div>
+</script>

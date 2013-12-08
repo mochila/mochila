@@ -1,54 +1,67 @@
-#dagr-list h6 {
-      font-size: 75%;
-      margin-top: -3px;
-      margin-bottom: 0px;
+#dagr-contents-container h6 {
+    font-size: 75%;
+    margin-top: -3px;
+    margin-bottom: 0px;
 }
 
-#dagr-list img {
-      height:85px;
-      
+#dagr-contents-container img {
+    height:60px;
+    
 }
 
-#dagr-list a {
-     color:inherit; 
+#dagr-contents-container a {
+    color:inherit; 
 }
 
-#dagr-list span.pull-left {
-     margin-right:10px;
+#dagr-contents-container span.pull-left {
+    margin-right:10px;
 }
 
-#dagr-list .btn-group{
-      top:2em;
-      margin-left: auto;
-      margin-right: auto;
+#dagr-contents-container .btn-group{
+    top:2em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#dagr-list .btn-default {
-      border: 0px;
-      color: #AAA;
-      opacity: 0;
+#dagr-contents-container .btn-default {
+    border: 0px;
+    color: #AAA;
+    opacity: 0;
 }
 
 
-#dagr-list .media-body {
-      display:inline-block;
-      width: 80%;
-      max-height: 85px;
-      text-overflow:clip;
+#dagr-contents-container .media-body {
+    display:inline-block;
+    width: 80%;
+    max-height: 85px;
+    
+    text-overflow:clip;
 }
 
-#dagr-list .list-group-item {
-      margin-top: 5px;
+#dagr-contents-container .media-body h1 {
+    margin-top: 10px;
 }
 
-#dagr-list .media.list-group-item:hover .btn-default {
-      opacity: 1;
+#dagr-contents-container .list-group-item {
+    margin-top: 5px;
+    height: 85px;
 }
 
-#dagr-list .media.list-group-item:hover .btn-default:hover {
-      color:#333;
-      background-color:inherit;
+#dagr-contents-container .media.list-group-item:hover .btn-default {
+    opacity: 1;
 }
 
+#dagr-contents-container .media.list-group-item:hover .btn-default:hover {
+    color:#333;
+    background-color:inherit;
+}
+
+#metadata-container {
+     padding: 10px;
+}
+
+div.form-group div,label {
+     margin-top:10px;
+}
 
 

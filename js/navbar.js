@@ -12,7 +12,6 @@ $(document).ready(function() {
      });
      
      
-     
      var $contents = $("#add-dagr-popover")
      
      

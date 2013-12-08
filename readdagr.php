@@ -9,7 +9,7 @@
      <body>
           <?php include("navbar.inc"); ?>
           <div class="row">
-               <div id="dagr-metadata" class="col-md-2">
+               <div id="dagr-metadata" class="col-md-1">
                     <div id="metadata-container" class="navbar navbar-default navbar-left" role="navigation">
                          <form role="form">
                               <div class="form-group">
@@ -33,7 +33,7 @@
                     </div>
                </div>
                
-               <div id="dagr-viewer" class="col-md-9">
+               <div id="dagr-viewer" class="col-md-11">
                     stuff inside
                     
                </div>
