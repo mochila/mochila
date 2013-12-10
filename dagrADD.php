@@ -1,5 +1,4 @@
 <?php
-include 'simple_html_dom.php';
 function guid(){
     if (function_exists('com_create_guid')){
         return com_create_guid();
@@ -18,7 +17,7 @@ function guid(){
     }
 }
 
-//$mysqli = new mysqli("db_server", "username", "password", "mochila_db");
+$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
 $dagrTags = $_GET['tags'];
@@ -34,18 +33,19 @@ $dagrPGUID = "ParentGUIDHere";
 
 
 /***************************************************************
-    Scrap the target URL to get metadata (date,size,author) for the DAGR.
+    Scrape the target URL to get metadata (date,size,author) for the DAGR.
 ***************************************************************/
-$html = file_get_html($targetURL);
+/*$html = file_get_html($targetURL);
 //echo $html->plaintext
-/*
+*/
 // Construct the current date (or get the current date)
 $dagrDate = "2010-03-12";
-*/
+
 // Get the size of the html
-$site = file_get_contents($targetURL);
-$dagrSize = strlen($site);
-echo $dagrSize;
+$curl = curl_init($targetURL);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER,TRUE);
+curl_exec($curl);
+$dagrSize = curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
 
 // Get the author of the URL
 $dagrAuthor = 'AuthorNameHere';
@@ -53,7 +53,7 @@ $dagrAuthor = 'AuthorNameHere';
 /**************************************************************
    Add the dagr to the database using a prepared statement.
 **************************************************************/
-/*$stmt = mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt = mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Bind the varaibles
 $stmt->bind_param("sssissss", $dagrguidVALUE, $dagrtitleVALUE, $dagrdateVALUE, $dagrsizeVALUE, $dagrtypeVALUE, $dagrlocVALUE, $dagrauthorVALUE, $dagrpguidVALUE);
@@ -76,6 +76,6 @@ $mysqli->close();
 
 //*****************************************************************
 
-$responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\n";
-echo $responseMessage;*/
+$responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
+echo $responseMessage;
 ?>
