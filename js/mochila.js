@@ -18,7 +18,7 @@ function Mochila() {
                 
                 $(".dagr-item .view-dagr").click(function () {
                     console.log("Dagr Shown");
-                    var dagrId = $(this).parent().parent().parent().attr("id")
+                    var dagrId = $(this).parent().parent().parent().attr("id");
                     mochila.displayDagrContents(dagrId);
                     
                 });
@@ -26,6 +26,11 @@ function Mochila() {
                 $("#goto-parent").click(function() {
                     var guid = $(this).attr("data-parent");
                     mochila.displayDagrContents(guid);
+                });
+                
+                $(".delete-dagr").click(function() {
+                    var guid = $(this).parent().parent().parent().attr("id");
+                    mochila.deleteDagr(guid);
                 });
             });
         },
@@ -191,6 +196,28 @@ Mochila.prototype.displayDagr = function(guid){
 Mochila.prototype.setDagrList = function(dagrList) {
     this.dagrList = dagrList;
     $(this).trigger("dagrlistupdate", dagrList);
+}
+
+
+Mochila.prototype.deleteDagr = function(guid){
+    console.log(guid);
+    console.log("Mochila.deleteDagr()");
+    $.ajax("dagrDelete.php",
+           {
+               type: "POST",
+               data: {
+                   guid: guid
+               },
+               error: function (jqXHR, textStatus, errorThrown) {
+                    alert("error");
+               },
+               success: function(data, textStatus, jqXHR){
+                   console.log(data);
+                   alert("look at console");
+               }
+               
+               
+           });
 }
 
 var MockData =  [
