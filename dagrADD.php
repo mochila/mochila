@@ -17,7 +17,6 @@ function guid(){
     }
 }
 
-$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
 $dagrTags = $_GET['tags'];
@@ -53,7 +52,8 @@ $dagrAuthor = 'AuthorNameHere';
 /**************************************************************
    Add the dagr to the database using a prepared statement.
 **************************************************************/
-$stmt = mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+/*
+$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");$stmt = mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Bind the varaibles
 $stmt->bind_param("sssissss", $dagrguidVALUE, $dagrtitleVALUE, $dagrdateVALUE, $dagrsizeVALUE, $dagrtypeVALUE, $dagrlocVALUE, $dagrauthorVALUE, $dagrpguidVALUE);
@@ -73,7 +73,7 @@ $stmt->close();
 
 // Close the sqli connection
 $mysqli->close();
-
+*/
 //*****************************************************************
 
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
