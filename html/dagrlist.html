@@ -1,6 +1,33 @@
 <div class="row">
     <div id="dagr-metadata" class="col-md-2">
         <div id="metadata-container" class="navbar navbar-default navbar-left" role="navigation">
+            <form role="form">
+                <div class="form-group">
+                    <input id="dagr-title" class="form-control" type="text" placeholder="File title">
+                    <div class="dagr-metadata text">
+                        <div><span class="text-left"><b>Author: </b></span><span id="author-metadata"></span></div>
+                        <div><span class="text-left"><b>Date: </b></span><span id="date-metadata"> </span></div>
+                        <div><span class="text-left"><b>Size: </b></span><span id="size-metadata"> </span></div>
+                        <div><span class="text-left"><b>Type: </b></span><span id="type-metadata"></span></div>
+                        
+                    </div>
+                    <div>
+                        <label  for="dagr-parent">Parent</label>
+                        
+                        <input id="dagr-parent" class="form-control" type="hidden">
+                    </div>
+                    <div>
+                        <label for="dagr-tags">Tags</label>
+                        <input type="text" class="form-control" id="dagr-tags">     
+                        
+                    </div>
+                    
+                </div>
+                <div class="pull-right btn-group"> 
+                    <button type="button" class="btn btn-default">Reset</button>
+                    <button type="button" class="btn btn-primary">Update</button>
+                </div>
+            </form>
         </div>
     </div>
     <div id="contents-container" class="col-md-10">

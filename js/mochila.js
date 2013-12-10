@@ -1,5 +1,6 @@
 var debug = true;
 var mochila = null;
+
 function Mochila() {
     this.dagrList = [];
     //TODO Define Server
@@ -8,14 +9,89 @@ function Mochila() {
     
     this.dagrs = {
         initDagrNavigation: function () {
-            $(".dagr-item").click(function () {
-                console.log(this.id);
-                mochila.displayDagr(this.id);
+            $(mochila).on("dagrload", function () {
+                console.log("DAGR LOADED");
+                $(".dagr-item").click(function () {
+                    console.log("DAGR Click");
+                    mochila.displayDagrMetaData(this.id);
+                });
+                
+                $(".dagr-item .view-dagr").click(function () {
+                    console.log("Dagr Shown");
+                    var dagrId = $(this).parent().parent().parent().attr("id")
+                    mochila.displayDagrContents(dagrId);
+                    
+                });
+                
+                $("#goto-parent").click(function() {
+                    var guid = $(this).attr("data-parent");
+                    mochila.displayDagrContents(guid);
+                });
             });
+        },
+        
+    };
+    
+    this.metaData = {
+        init: function() {
+            console.log(mochila.dagrList);
+            var parents = mochila.getParentDagrs();
+            console.log(parents);
+            $("#dagr-parent").select2({
+                placeholder: "Parent",
+                data: parents,
+                createSearchChoice: function(term){
+                    return {id: "-1 "+term, value:term, text:term};
+                }
+            });
+            
+            $("#dagr-tags").tokenfield();
+        }
+        
+    };
+    
+    
+    this.file = {
+        isPdfable : function (file) {
+            var pdfableFiles = ["doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf", "ps", "eps", "prn", ".wpd", "odt", "odp", "ods", "odg", "odf", "sxw", "sxi", "sxc", "sxd", "stw", "psd", "xps"];
+            
+            //TODO add check for the no "." in the filename
+            var extension = file.slice(file.lastIndexOf(".") + 1);
+            return (pdfableFiles.indexOf(extension) > 0);
+            
         }
     };
+    
+    this.popups = {
+        url: {
+            init: function(){
+                var parents = mochila.getParentDagrs()
+                $("#url-parent-dagr").select2({
+                    placeholder: "Parent",
+                    data: parents,
+                    createSearchChoice: function(term){
+                        return {id: "-1 "+term, value:term, text:term};
+                    }
+                });
+            }
+        },
+        file: {
+            init: function() {
+                var parents = mochila.getParentDagrs()
+                $("#file-parent-dagr").select2({
+                    placeholder: "Parent",
+                    data: parents,
+                    createSearchChoice: function(term){
+                        return {id: "-1 "+term, value:term, text:term};
+                    }
+                });
+            }   
+            
+        }  
+        
+    };
+    
 }
-
 
 
 Mochila.prototype.refreshDagrList = function () {
@@ -33,27 +109,57 @@ Mochila.prototype.getDagr = function(guid) {
     }
 }
 
-Mochila.prototype.displayDagrContents = function(parentGuid) {
+Mochila.prototype.getParentDagrs = function() {
+    var data = $.map(this.dagrList, function(d) {
+        if (d.parentGuid == null) {
+            return { id:d.guid, text: d.title};
+        }});
+    return data;
+}
+
+Mochila.prototype.displayDagrContents = function(guid) {
     //var children = $.map(this.dagrList, function (d) { if (d.parent == parentGuid){ return d; } });
-    var children = []
-    var currDagr = null;
+    var children = [];
+    var currDagr = this.getDagr(guid);
+    console.log("currDagr");
     for (var x in this.dagrList){
         console.log(this.dagrList[x].parentGuid);
         //Grab children
-        if (this.dagrList[x].parentGuid == parentGuid){
+        if (this.dagrList[x].parentGuid == guid){
             children.push(this.dagrList[x]);
         }
     }
     
+    console.log(children);
+    console.log(currDagr);
     //Display the contents
-    if (children.length > 0) {
+    if (currDagr== null || currDagr.type == "parent") {
         var template = $("#dagrItemTemplate").html();
         var html = Mustache.to_html(template, {dagrs: children});
         $("#dagr-contents-container").html(html);
+        $("#goto-parent").attr("data-parent", currDagr==null ? null :currDagr.parentGuid);
+    } else if(currDagr.type == "url"){
+        this.displayUrl(currDagr.content.contentLocation);
     } else {
-        //TODO display the view of the file
+        this.displayFile(currDagr.content.contentLocation);
     }
+    $("#metadata-container").addClass("hidden");
+    $("#contents-container").attr("class", "col-md-12");
+    $(this).trigger("dagrload");
 }
+
+Mochila.prototype.displayFile = function(fileLocation){
+    //TODO
+    //Grab file and convert to pdf
+    //On success display pdf
+    window.location.href = "profile.pdf";
+    //On failure just use the regular file and not the pdf
+}
+
+Mochila.prototype.displayUrl = function (url) {
+    window.location.href = url;
+}
+
 
 Mochila.prototype.displayDagrMetaData = function(guid) {
     var dagr = this.getDagr(guid);
@@ -61,12 +167,16 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
     if(dagr != null){
         $("#metadata-container").removeClass("hidden");
         $("#contents-container").attr("class", "col-md-10")
-        var template = $("#metadata-form-template").html();
-        var html = Mustache.to_html(template, dagr);
-        $("#metadata-container").html(html);
+        $("#dagr-title").val(dagr.title);
+        $("#author-metadata").html(dagr.author);
+        $("#date-metadata").html(dagr.date);
+        $("#size-metadata").html(dagr.size);
+        $("#type-metadata").html(dagr.content.contentType);
+        $("#dagr-parent").select2("val", dagr.parentGuid);
+        $("#dagr-tags").tokenfield("setTokens",dagr.tags);
+        
     } else {
-        $("#metadata-container").addClass("hidden");
-        $("#contents-container").attr("class", "col-md-12")
+        
     }
     
     
@@ -93,9 +203,10 @@ var MockData =  [
         size: "200mb",
         type: "parent",
         content:  {
-            contentType: "url",
-            contentLocation: "www.google.com"
-        }
+            contentType: "parent",
+            contentLocation: null
+        },
+        tags: ["tag4"]
         
     },
     
@@ -110,8 +221,9 @@ var MockData =  [
         type: "url",
         content: {
             contentType: "url",
-            contentLocation: "www.google.com"
-        }
+            contentLocation: "http://www.google.com"
+        },
+        tags: ["tag1" ,"tag2", "tag3"]
     },
     
     {
@@ -126,7 +238,8 @@ var MockData =  [
         content: {
             contentType: "pdf",
             contentLocation: "example.pdf"
-        }
+        },
+        tags: ["tag1" ,"tag2", "tag3"]
         
     }
     
@@ -140,7 +253,11 @@ $(document).ready(function(){
         mochila.setDagrList(MockData);
         mochila.displayDagrContents(null);
         mochila.displayDagrMetaData();
-        mochila.dagrs.initDagrNavigation(null);
+        mochila.dagrs.initDagrNavigation();
+        mochila.metaData.init();
+        mochila.popups.file.init();
+        mochila.popups.url.init();
+        $(mochila).trigger("dagrload", ["custom" ,"event"]);
         console.log("Mochila initialized");
     } else { 
         //Pull date from the server and setTheDagrList
