@@ -50,10 +50,13 @@ $dagrSize = curl_getinfo($curl, CURLINFO_SIZE_DOWNLOAD);
 $dagrAuthor = 'AuthorNameHere';
 
 /**************************************************************
-   Add the dagr to the database using a prepared statement.
+   Add the dagr to the DAGRS table using a prepared statement.
 **************************************************************/
 
-$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");$stmt = $mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
+
+// Prepare the statement
+$stmt = $mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Bind the varaibles
 $stmt->bind_param("sssissss", $dagrguidVALUE, $dagrtitleVALUE, $dagrdateVALUE, $dagrsizeVALUE, $dagrtypeVALUE, $dagrlocVALUE, $dagrauthorVALUE, $dagrpguidVALUE);
@@ -71,10 +74,35 @@ $dagrpguidVALUE = $dagrPGUID;
 $stmt->execute();
 $stmt->close();
 
-// Close the sqli connection
-$mysqli->close();
+/***************************************************************
+  Add the tags for the dagr to the TAGS tables
+****************************************************************/
 
-//*****************************************************************
+// Prepare the statement
+$addTags = $mysqli->prepare("INSERT INTO TAGS (DAGR_GUID, TAG_TITLE) VALUES(?,?)");
+
+// Bind the parameters
+$addTags->bind_param("ss", $dagrGUIDVALUE, $tagVALUE);
+$dagrGUIDVALUE = $dagrGUID;
+
+// Split up the tags string into multiple strings
+$allTags = explode(";", dagrTags);
+foreach ($allTags as &$tagVALUE) {
+  // Execute the statement
+  $addTags->execute();
+}
+
+// Close the statement
+$addTags->close();
+
+/***************************************************************
+  Add the GUID to the CHILD_DAGRS table if applicable
+***************************************************************/
+
+
+/***************************************************************
+  Echo the variables back to the client
+***************************************************************/
 
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
 echo $responseMessage;
