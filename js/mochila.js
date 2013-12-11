@@ -4,7 +4,7 @@ var mochila = null;
 function Mochila(dagr_list, currDagr) {
     this.dagrList = dagr_list;
     this.currDagr = currDagr;
-    //TODO Define Server
+    this.parentList = null;
     this.server = {
     };
     
@@ -37,9 +37,10 @@ function Mochila(dagr_list, currDagr) {
     };
     
     this.metaData = {
-        init: function() {
-            console.log(mochila.dagrList);
-            var parents = mochila.getParentDagrs();
+        init: function(parentList) {
+            console.log("init_metadata");
+            console.log(parentList);
+            var parents = $.map(parentList, function (d) {return {id: d.guid, text:d.title};});
             console.log(parents);
             $("#dagr-parent").select2({
                 placeholder: "Parent",
@@ -68,11 +69,10 @@ function Mochila(dagr_list, currDagr) {
     
     this.popups = {
         url: {
-            init: function(){
-                var parents = mochila.getParentDagrs()
+            init: function(parentList){
                 $("#url-parent-dagr").select2({
                     placeholder: "Parent",
-                    data: parents,
+                    data: parentList,
                     createSearchChoice: function(term){
                         return {id: "-1 "+term, value:term, text:term};
                     }
@@ -80,18 +80,24 @@ function Mochila(dagr_list, currDagr) {
             }
         },
         file: {
-            init: function() {
-                var parents = mochila.getParentDagrs()
+            init: function(parentList) {
                 $("#file-parent-dagr").select2({
                     placeholder: "Parent",
-                    data: parents,
+                    data: parentList,
                     createSearchChoice: function(term){
                         return {id: "-1 "+term, value:term, text:term};
                     }
                 });
             }   
             
-        }  
+        },
+        init: function(mochila){
+            var parents = $.map(mochila.parentList, function (d) {return {id: d.guid, text:d.title};});
+            this.file.init(parents);
+            this.url.init(parents);
+            
+        }
+        
         
     };
     
@@ -126,32 +132,55 @@ Mochila.prototype.getDagr = function(guid) {
 
 //TODO FIX
 Mochila.prototype.getParentDagrs = function() {
-    var data = $.map(this.dagrList, function(d) {
-        if (d.parentGuid == null) {
-            return { id:d.guid, text: d.title};
-        }});
-    return data;
+    var currMochila = this;
+    $.ajax("getParents.php", {
+        type: "GET",
+        dataType: "json",
+        error: function(jqXHR, textStatus, errorThrown){
+            console.log(textStatus);
+        },
+        success: function(data, textStatus, jqXHR){
+            console.info("getParentDagrs");
+            console.log(data);
+            currMochila.parentList = data;
+            console.log("trigger to send");
+            $(currMochila).trigger("parentsLoaded", [this.parentList]);
+            
+        }
+    });
+    
 }
 
 Mochila.prototype.displayDagrContents = function(guid) {
     //var children = $.map(this.dagrList, function (d) { if (d.parent == parentGuid){ return d; } });
     //Display the contents
-    var dagr = this.getDagr(guid);
     
-    if (dagr== null || dagr.type == "parent") {
+    var dagr = null;
+    if(this.currDagr != null && guid == this.currDagr.guid){
+        dagr = this.currDagr;
+    } else {
+        dagr = this.getDagr(guid);
+    }
+    
+    
+    if (dagr == null){
+        this.displayParentDagr(null);
+    } else if (dagr.type == "parent") {
         this.displayParentDagr(dagr.guid);
     } else if(dagr.type == "url"){
         this.displayUrl(currDagr.content.contentLocation);
     } else {
         this.displayFile(currDagr.content.contentLocation);
     }
-    $("#metadata-container").addClass("hidden");
-    $("#contents-container").attr("class", "col-md-12");
+    
 }
 
 Mochila.prototype.displayParentDagr = function(guid) {
-    window.location.href = "getDagr.php?guid="+guid;
-
+    if(guid != null){
+        window.location.href = "getDagr.php?guid="+guid;
+    } else {
+        window.location.href = "getDagr.php";
+    }
 }
 
 Mochila.prototype.displayFile = function(fileLocation){
@@ -177,7 +206,7 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
         $("#author-metadata").html(dagr.author);
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
-        $("#type-metadata").html(dagr.content.contentType);
+        $("#type-metadata").html(dagr.file_type);
         $("#dagr-parent").select2("val", dagr.parentGuid);
         $("#dagr-tags").tokenfield("setTokens",dagr.tags);
         
@@ -194,6 +223,8 @@ Mochila.prototype.displayDagr = function(){
     var html = Mustache.to_html(template, {dagrs: this.dagrList});
     $("#dagr-contents-container").html(html);
     $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
+    $("#metadata-container").addClass("hidden");
+    $("#contents-container").attr("class", "col-md-12");
 }
 
 
@@ -281,24 +312,15 @@ var MockData =  [
 
 $(document).ready(function(){
     mochila = new Mochila($dagr_info["children"],$dagr_info["parent"]);
-    if(debug){
-        //        mochila.setDagrList(MockData);
-        //        mochila.displayDagrContents(null);
-        //        mochila.displayDagrMetaData();
-        //        mochila.dagrs.initDagrNavigation();
-        //        mochila.metaData.init();
-        //        mochila.popups.file.init();
-        //        mochila.popups.url.init();
-        //        $(mochila).trigger("dagrload", ["custom" ,"event"]);
-        //        console.log("Mochila initialized");
-    } else { 
-        //mochila.setDagrList(dagrList.children, dagrList.parent);
-        mochila.displayDagr();
-        mochila.dagrs.initDagrNavigation()
-        mochila.metaData.init();
-        mochila.popups.file.init();
-        mochila.popups.url.init();
-        
-        //Pull date from the server and setTheDagrList
-    }
+    mochila.displayDagr();
+    mochila.dagrs.initDagrNavigation();
+    $(mochila).on("parentsLoaded", function() {
+        console.log("parentsLoaded");
+        mochila.metaData.init(mochila.parentList);
+        mochila.popups.init(mochila);
+    });
+    mochila.getParentDagrs();
+    
+    //Pull date from the server and setTheDagrList
+    
 });
