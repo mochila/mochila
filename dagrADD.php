@@ -87,7 +87,8 @@ $dagrGUIDVALUE = $dagrGUID;
 
 // Split up the tags string into multiple strings
 $allTags = explode(";", dagrTags);
-foreach ($allTags as &$tagVALUE) {
+foreach ($allTags as $tag) {
+  $tagVALUE = $tag;
   // Execute the statement
   $addTags->execute();
 }
