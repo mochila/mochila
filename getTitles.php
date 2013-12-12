@@ -10,7 +10,7 @@ while($row = $result->fetch_assoc()) {
   $rows[] = $row;
 }
 
-$mysqli->close()
+$mysqli->close();
 
 // Echo the json encoding of the array
 echo json_encode($rows);
