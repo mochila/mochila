@@ -25,6 +25,7 @@ $dagrTags = $_GET['tags'];
 $dagrPON = $_GET['parentOn'];
 $dagrPD = $_GET['parentDagr'];
 
+echo $dagrPD;
 // Generate a GUID
 $dagrGUID = guid();
 
@@ -134,5 +135,5 @@ if ($dagrPON == "AddToParent") {
 ***************************************************************/
 
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
-echo $responseMessage;
+//echo $responseMessage;
 ?>
