@@ -1,7 +1,7 @@
 <?php
 
 function getTags($guid){
-    $db = new mysqli("localhost", "root", "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare("select `TAG_TITLE` from `TAGS` where `DAGR_GUID`=?");
     $statement->bind_param("s", $guid);
     $statement->execute();
@@ -16,7 +16,7 @@ function getTags($guid){
 
 function getDagr($guid){
     $statement = null;
-    $db = new mysqli("localhost", "root", "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     
     if ($guid == null){
         $statement = $db->prepare("select `DAGR_GUID`,`DAGR_TITLE`,`DAGR_DATE`, `DAGR_SIZE`,`DAGR_TYPE`, `DAGR_FILE_TYPE`, `DAGR_FILE_LOC`, `DAGR_AUTHOR`, `DAGR_PARENT_GUID` from `DAGRS` where `DAGR_PARENT_GUID` is NULL");

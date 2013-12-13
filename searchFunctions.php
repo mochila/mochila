@@ -17,7 +17,7 @@ function free_search($term){
     
     $dagr_list = array();
     if($term != null && $term != ""){
-        $db = new mysqli("localhost", "root", "root", "mochila_db");
+        $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
         $statement = $db->prepare(
             "select * from 
         DAGRS natural join TAGS 
@@ -173,7 +173,7 @@ function sterile_search(){
 }
 
 function tag_search($tag){
-    $db = new mysqli("localhost", "root", "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
         from DAGRS natural join TAGS
@@ -186,7 +186,7 @@ function tag_search($tag){
 }
 
 function time_range_search($start_time, $end_time){
-    $db = new mysqli("localhost", "root", "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
         from DAGRS natural join TAGS

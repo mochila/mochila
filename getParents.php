@@ -2,7 +2,7 @@
 
 function getParents() {
     $statement = null;
-    $db = new mysqli("localhost", "root", "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare("select `DAGR_GUID`,`DAGR_TITLE`,`DAGR_DATE`, `DAGR_SIZE`, `DAGR_TYPE`, `DAGR_FILE_TYPE`, `DAGR_FILE_LOC`, `DAGR_AUTHOR`, `DAGR_PARENT_GUID` from `DAGRS` where `DAGR_TYPE`='parent'");
     
     $statement->execute();

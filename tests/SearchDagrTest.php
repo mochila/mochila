@@ -7,7 +7,7 @@ class SearchDagrTest extends PHPUnit_Framework_TestCase
     protected $db;
     
     protected function setUp(){
-        $this->db = new mysqli("localhost", "root", "root", "mochila_db");
+        $this->db = new mysqli("localhost", "root", "dude1313", "mochila_db");
         $statement = $this->db->prepare("insert into `DAGRS` values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $tag_stmnt = $this->db->prepare("insert into `TAGS` values(?,?)");
         $guid = "1";
@@ -117,7 +117,6 @@ class SearchDagrTest extends PHPUnit_Framework_TestCase
     }
     
     public function tearDown(){
-//        $this->db = new mysqli("localhost", "root", "root", "mochila_db");
 //        $this->db->prepare("delete from `DAGRS`")->execute();
 //        $this->db->prepare("truncate `TAGS`")->execute();
 //        $this->db->close();

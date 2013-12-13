@@ -6,7 +6,7 @@ class DeleteDagrTest extends PHPUnit_Framework_TestCase
 {
     
     public function setUp(){
-        $db = new mysqli("localhost", "root", "root", "mochila_db");
+        $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
         $statement = $db->prepare("insert into `DAGRS` values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $tag_stmnt = $db->prepare("insert into `TAGS` values(?,?)");
         $guid = "1";
@@ -100,7 +100,7 @@ class DeleteDagrTest extends PHPUnit_Framework_TestCase
     
     public function tearDown(){
      
-//        $db = new mysqli("localhost", "root", "root", "mochila_db");
+//        $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
 //        $db->prepare("delete from `DAGRS`")->execute();
 //        $db->prepare("truncate `TAGS`")->execute();
 //        $db->close();
@@ -108,7 +108,7 @@ class DeleteDagrTest extends PHPUnit_Framework_TestCase
     }
     
 //    public function testSingularDeleteWorks(){
-//        $db = new mysqli("localhost", "root", "root", "mochila_db");
+//        $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
 //        singular_delete("1", $db);
 //        $verify = $db->prepare("select `DAGR_GUID` from `DAGRS` where `DAGR_GUID`='1' or DAGR_PARENT_GUID='1'");
 //        $verify->execute();
@@ -145,7 +145,7 @@ class DeleteDagrTest extends PHPUnit_Framework_TestCase
 //    }
 //    
 //    public function testRecursiveDeleteWorks(){
-//        $db = new mysqli("localhost", "root", "root", "mochila_db");
+//        $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
 //        recursive_delete("1", $db);
 //        $verify = $db->prepare("select `DAGR_GUID` from `DAGRS`");
 //        $verify->execute();

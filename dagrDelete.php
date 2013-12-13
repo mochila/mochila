@@ -21,7 +21,7 @@ function recursive_delete($guid, $db){
 
 
 function delete_dagr($guid, $recursive){
-    $db = new mysqli("localhost", "root", "root", "mochila_db"); 
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db"); 
     if($recurive){
         recursive_delete($guid);
     } else {
