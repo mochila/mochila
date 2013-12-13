@@ -16,7 +16,7 @@ var text_entry = require("sdk/panel").Panel({
 text_entry.on("show", function() {
   // Send a get request to the mochila server for the dagr titles
   var httpRequest = Request({
-    url: "http://mochila.coffeecupcoding.com/getTitles.php?",
+    url: "http://localhost/getTitles.php?",
     onComplete: function (response) {
       // Pass the json object to the content script
       console.log(response.json);
@@ -36,7 +36,7 @@ text_entry.port.on("buttonpressed", function (text) {
 
   // Send a GET request to the mochila server with the url
   var httpRequest = Request({
-    url: "http://mochila.coffeecupcoding.com/dagrADD.php?q="+tabs.activeTab.url+text,
+    url: "http://localhost/dagrADD.php?q="+tabs.activeTab.url+text,
     onComplete: function (response) {
       console.log("Received response:"+ response.text);
     }

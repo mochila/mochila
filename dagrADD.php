@@ -36,7 +36,7 @@ $dagrPGUID;
 /*************************************************************
     Get the parent DAGR if one was selected
 **************************************************************/
-if ($dagrPON == 'AddToParent') {
+if ($dagrPON == 1) {
   $getParentStmt = $mysqli->prepare("Select DAGR_GUID from DAGRS where DAGR_TITLE = ?");
 
   // Bind parameters
@@ -119,7 +119,7 @@ $addTags->close();
 /***************************************************************
   Add the GUID to the CHILD_DAGRS table if applicable
 ***************************************************************/
-if ($dagrPON == "AddToParent") {
+if ($dagrPON == 1) {
   $addChildDAGRstmt = $mysqli->prepare("INSERT INTO CHILD_DAGRS (PARENT_GUID, CHILD_GUID) VALUES(?,?)";
 
   $addChildDAGRstmt->bind_param("ss", $dagrGUIDVALUE, $dagrPGUIDVALUE);
