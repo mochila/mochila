@@ -22,13 +22,15 @@ sbutton.addEventListener("click", function() {
   // Get the value from the Parent checkbox and selector
   var parentOnInput = document.getElementById("useParent");
   var parentOn;
+  var pInput = document.getElementById("parentSelector");
+  var parentSelect;
   if (parentOnInput.checked) {
     parentOn = 1;
+    parentSelect = pInput.options[pInput.selectedIndex].value;
   } else {
     parentOn = 0;
+    parentSelect = 0;
   }
-  var pInput = document.getElementById("parentSelector");
-  var parentSelect = pInput.options[pInput.selectedIndex].value;
   
   // Form the 4 inputs into url parameters
   var text = "&title="+dtitle+"&tags="+dtag+"&parentOn="+parentOn+"&parentDagr="+parentSelect;

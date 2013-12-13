@@ -17,7 +17,7 @@ function guid(){
     }
 }
 
-$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
+$mysqli = new mysqli("localhost", "root", "", "mochila_db");
 
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
@@ -25,13 +25,12 @@ $dagrTags = $_GET['tags'];
 $dagrPON = $_GET['parentOn'];
 $dagrPD = $_GET['parentDagr'];
 
-echo $dagrPD;
 // Generate a GUID
 $dagrGUID = guid();
 
 // Get the type of the input (will be HTML)
 $dagrType = 'HTML';
-$dagrPGUID;
+$dagrPGUID = NULL;
 
 /*************************************************************
     Get the parent DAGR if one was selected
@@ -120,9 +119,9 @@ $addTags->close();
   Add the GUID to the CHILD_DAGRS table if applicable
 ***************************************************************/
 if ($dagrPON == 1) {
-  $addChildDAGRstmt = $mysqli->prepare("INSERT INTO CHILD_DAGRS (PARENT_GUID, CHILD_GUID) VALUES(?,?)";
+  $addChildDAGRstmt = $mysqli->prepare("INSERT INTO CHILD_DAGRS (PARENT_GUID, CHILD_GUID) VALUES(?,?)");
 
-  $addChildDAGRstmt->bind_param("ss", $dagrGUIDVALUE, $dagrPGUIDVALUE);
+  $addChildDAGRstmt->bind_param("ss", $dagrPGUIDVALUE, $dagrGUIDVALUE);
   $dagrGUIDVALUE = $dagrGUID;
   $dagrPGUIDVALUE = $dagrPGUID;
 
@@ -135,5 +134,5 @@ if ($dagrPON == 1) {
 ***************************************************************/
 
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
-//echo $responseMessage;
+echo $responseMessage;
 ?>
