@@ -6,7 +6,7 @@ function execute_text_search($statement){
     $statement->bind_result($guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
     $dagr_list = array();
     while($statement->fetch()){
-        $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $title, $size, $type, $file_type, $loc, $author, $parent, $tag);
+        $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
     }
     $dagr_list = format_dagr_list($dagr_list);
     return $dagr_list;
@@ -104,7 +104,7 @@ function reach_search_helper($dagr_list, $guid, $level){
     } else {
         $reach_list[] = $dagr_list[$guid];
         foreach($dagr_list as $dagr){
-            if($dagr["parent"] == $guid){
+            if($dagr["parentGuid"] == $guid){
                 $sub_list = reach_search_helper($dagr_list, $dagr["guid"], $level - 1);
                 
                 
@@ -130,7 +130,7 @@ function reach_search($dagr_title) {
         if (strcasecmp($dagr_title,$title) == 0){
             $super_parent = $guid;
         }
-        $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $title, $size, $type, $file_type, $loc, $author, $parent, $tag);
+        $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
         
     }
     $db->close();

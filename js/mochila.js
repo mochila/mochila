@@ -33,6 +33,18 @@ function Mochila(dagr_list, currDagr) {
                     //TODO populate the template
                 });
                 
+                $("#search-button").click(function(){
+                    mochila.search();
+                    
+                });
+                
+                $("#search-input").keyup(function(e){
+                    if(e.keyCode == 13){
+                        mochila.search();
+                    }
+                    
+                });
+                
             });
             
         }
@@ -153,6 +165,7 @@ Mochila.prototype.getParentDagrs = function() {
         success: function(data, textStatus, jqXHR){
             console.info("getParentDagrs");
             console.log(data);
+            data.push({title: "No parent", guid:"-1"})
             currMochila.parentList = data;
             console.log("trigger to send");
             $(currMochila).trigger("parentsLoaded", [this.parentList]);
@@ -211,17 +224,20 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
     var dagr = this.getDagr(guid);
     console.log(dagr);
     if(dagr != null){
-        $("#metadata-container").removeClass("hidden");
+        $("#metadata-container").slideDown();
+        
         $("#contents-container").attr("class", "col-md-10")
         $("#dagr-title").val(dagr.title);
         $("#author-metadata").html(dagr.author);
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
         $("#type-metadata").html(dagr.file_type);
-        $("#dagr-parent").select2("val", dagr.parentGuid);
+        if(dagr.parentGuid != null){
+            $("#dagr-parent").select2("val", dagr.parentGuid);
+        } else {
+            $("#dagr-parent").select2("val", "-1");
+        }
         $("#dagr-tags").tokenfield("setTokens",dagr.tags);
-        
-    } else {
         
     }
     
@@ -238,7 +254,7 @@ Mochila.prototype.displayDagr = function(){
     } else {
         $("#dagr-contents-container").html("This DAGR is Sterile");
     }
-    $("#metadata-container").addClass("hidden");
+    $("#metadata-container").hide();
     $("#contents-container").attr("class", "col-md-12");
 }
 
@@ -271,6 +287,28 @@ Mochila.prototype.deleteDagr = function(guid){
                
                
            });
+}
+
+Mochila.prototype.search = function (){
+    var currMochila = this;
+    var type = $("#search-dropdown input[name='search-type']:checked").val();
+    if (type == "date"){
+        var term = $("#from-date").val();
+        window.location.href = "searchDagrs.php?type=" + encodeURIComponent(type) +"&term="+ encodeURIComponent(term);
+    }else if (type == "time") {
+        var start = $("#from-date").val();
+        var end = $("#to-date").val();
+        if(start < end){
+            
+            window.location.href = "searchDagrs.php?type=" + encodeURIComponent(type) +"&start="+ encodeURIComponent(start) + "&end=" + encodeURIComponent(end);
+            
+        }
+    }else{
+        var term = $("#search-input").val();
+        if(term != "" && term != null){
+            window.location.href = "searchDagrs.php?type=" + encodeURIComponent(type) +"&term="+ encodeURIComponent(term);
+        }
+    }
 }
 
 Mochila.prototype.init = function() {

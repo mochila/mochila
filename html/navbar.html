@@ -1,94 +1,99 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      
-      <! -- Brand and toggle -->
-      <div class="navbarheader">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav-bar-collapse">
-                  <span class="sr-only">Toggle Navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  
-            </button>
-            <a class="navbar-brand" href="."><img class="nav-bar-image" src="images/mochila.png"> Mochila</a>
-      </div>
-      
-      <div class="collapse navbar-collapse" id="top-nav-bar-collapse">
-            <ul class="nav navbar-nav">
-                  <li><a id="add-dagr" href="#"><b class="glyphicon glyphicon-plus"></b></a></li>
-                  <! -- Group by drop down -->
-                  <li><a id="goto-parent" href="#"><b class="glyphicon glyphicon-chevron-left"></b> Goto Parent</a></li>
-            </ul>
-            <form class="navbar-form" role="search">
-                  <div class="input-group">
-                        <div id="search-container">
-                              <!-- Standard search box -->
-                              <input id="search-input" type="text" class="form-control">
-                              
-                              <!-- Date search boxes -->
-                              <div id="from-date" class="bfh-datepicker hidden col-md-5"></div>
-                              <span id="to-text" class="col-md-2 hidden text-center">to</span>
-                              <div id="to-date" class="bfh-datepicker hidden col-md-5" data-align="right"></div>
-                        </div>
-                         
-                        <div class="input-group-btn">
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-                        </div>
-                        <div class="input-group-btn">
-                              <button id="search-type-dropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Search by<span class="caret"></span>
-                              </button>
-                              
-                              <ul id="search-dropdown" class="dropdown-menu pull-right">
-                                    <li>
-                                          <input type="radio" name="search-type" id="author-radio" value="author" />
-                                          <label for="author-radio"><div>Author</div></label>
-                                          
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="date-radio" value="date" />
-                                          <label for="date-radio">Date</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="type-radio" value="type" />
-                                          <label for="type-radio">File Type</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="keyword-radio" value="keyword" />
-                                          <label for="keyword-radio">Keyword</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="orphan-radio" value="orphan" />
-                                          <label for="orphan-radio">Orphan</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="reach-radio" value="reach" />
-                                          <label for="reach-radio">Reach</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="size-radio" value="size" />
-                                          <label for="size-radio">Size</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="sterile-radio" value="sterile" />
-                                          <label for="sterile-radio">Sterile</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="tag-radio" value="tag" />
-                                          <label for="tag-radio">Tag</label>
-                                    </li>
-                                    <li>
-                                          <input type="radio" name="search-type" id="time-radio" value="time" />
-                                          <label for="time-radio">Time Range</label>
-                                    </li>
-                              </ul>
-                        </div><!-- /btn-group -->
-                       
-                  </div><!-- /input-group -->
-                  
-                  
-                  
-            </form>
+    
+    <! -- Brand and toggle -->
+    <div class="navbarheader">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#top-nav-bar-collapse">
+            <span class="sr-only">Toggle Navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
             
-      </div>
-      
+        </button>
+        <a class="navbar-brand" href="."><img class="nav-bar-image" src="images/mochila.png"> Mochila</a>
+    </div>
+    
+    <div class="collapse navbar-collapse" id="top-nav-bar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a id="add-dagr" href="#"><b class="glyphicon glyphicon-plus"></b></a></li>
+            <! -- Group by drop down -->
+            <li><a id="goto-parent" href="#"><b class="glyphicon glyphicon-chevron-left"></b> Goto Parent</a></li>
+        </ul>
+        <form class="navbar-form" role="search">
+            <div class="input-group">
+                <div id="search-container">
+                    <!-- Standard search box -->
+                    <input id="search-input" type="text" class="form-control">
+                    
+                    <!-- Date search boxes -->
+                    <div id="from-date" class="bfh-datepicker hidden col-md-5" data-format="y-m-d"></div>
+                    <span id="to-text" class="col-md-2 hidden text-center">to</span>
+                    <div id="to-date" class="bfh-datepicker hidden col-md-5" data-align="right" data-format="y-m-d"></div>
+                </div>
+                
+                <div class="input-group-btn">
+                    <button id="search-button" type="button" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+                <div class="input-group-btn">
+                    <button id="search-type-dropdown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        Search by<span class="caret"></span>
+                    </button>
+                    
+                    <ul id="search-dropdown" class="dropdown-menu pull-right">
+                        <li>
+                            <input type="radio" name="search-type" id="free-radio" value="free" checked />
+                            <label for="free-radio"><div>Free Search</div></label>
+                            
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="author-radio" value="author" />
+                            <label for="author-radio"><div>Author</div></label>
+                            
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="date-radio" value="date" />
+                            <label for="date-radio">Date</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="type-radio" value="type" />
+                            <label for="type-radio">File Type</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="keyword-radio" value="title" />
+                            <label for="keyword-radio">Title</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="orphan-radio" value="orphan" />
+                            <label for="orphan-radio">Orphan</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="reach-radio" value="reach" />
+                            <label for="reach-radio">Reach</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="size-radio" value="size" />
+                            <label for="size-radio">Size</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="sterile-radio" value="sterile" />
+                            <label for="sterile-radio">Sterile</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="tag-radio" value="tag" />
+                            <label for="tag-radio">Tag</label>
+                        </li>
+                        <li>
+                            <input type="radio" name="search-type" id="time-radio" value="time" />
+                            <label for="time-radio">Time Range</label>
+                        </li>
+                    </ul>
+                </div><!-- /btn-group -->
+                
+            </div><!-- /input-group -->
+            
+            
+            
+        </form>
+        
+    </div>
+    
 </nav>
