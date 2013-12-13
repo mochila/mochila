@@ -1,8 +1,9 @@
 <script id="affected-dagr-template" type="text/template">
 <div>
-    <p>If you delete this DAGR the following will be affected</p>
-    <ul>
-        {{#children}}<li>{{.}}</li>{{/children}}
+    <h4>If you delete this DAGR the following will be affected</h4>
+    <ul class="list-unstyled">
+        {{#children}}<li>{{title}}</li>{{/children}}
     </ul>
 </div>
+<hr/>
 </script>

@@ -22,8 +22,8 @@ function recursive_delete($guid, $db){
 
 function delete_dagr($guid, $recursive){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db"); 
-    if($recurive){
-        recursive_delete($guid);
+    if($recursive){
+        recursive_delete($guid, $db);
     } else {
         singular_delete($guid, $db);
     }
@@ -33,16 +33,17 @@ function delete_dagr($guid, $recursive){
 
 $response_array = array();
 $guid = $_POST["guid"];
-$recursive = $_POST["guid"];
+$recursive = $_POST["recursive"];
 
 if($guid != ""){
-    delete_dagr($guid);
+    delete_dagr($guid, $recursive == "true");
     $response_array["status"] = "success";
     $response_array["guid"] = $guid;
     
 } else {
     $response_array["status"] = "error";
-    $response_array["guid"] = $guid;        
+    $response_array["guid"] = $guid;
+    $response_array["recursive"];
 }
 
 header("Content Type: application/json");

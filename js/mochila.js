@@ -29,8 +29,35 @@ function Mochila(dagr_list, currDagr) {
                 });
                 
                 $("#delete-dagr-modal").on("show.bs.modal", function(e){
-                    //TODO perform reach query
-                    //TODO populate the template
+                    var guid = $(e.relatedTarget).parent().parent().parent().attr("id")
+                    $("#delete-dagr-guid").val(guid);
+                    $.ajax("getAffectedDagrs.php", {
+                        type: "GET",
+                        dataType: "json",
+                        data: { guid: guid },
+                        error: function () {
+                            console.error("Error getting affected dagrs");
+                        },
+                        success: function (data, textStatus, jqXHR) {
+                            if(data.length > 1){
+                                var template = $("#affected-dagr-template").html();
+                                var html = Mustache.to_html(template, {children: data});
+                                $("#affected-dagrs-container").html(html);
+                                $("#recursive-selection").removeClass("hidden");
+                            } else {
+                                $("#affected-dagrs-container").html("<h2>Are you sure you want to delete " + data[0].title + "?</h2>");
+                                $("#recursive-selection").addClass("hidden");
+                            }
+                        }
+                        
+                    });
+                    
+                });
+                
+                $("#delete-dagr-submit").click(function() {
+                    var guid = $("#delete-dagr-guid").val();
+                    var recursive = $("#delete-dagr-modal input[name='delete-type']:checked").val() == "true";
+                    mochila.deleteDagr(guid, recursive);
                 });
                 
                 $("#search-button").click(function(){
@@ -153,7 +180,6 @@ Mochila.prototype.getDagr = function(guid) {
 }
 
 
-//TODO FIX
 Mochila.prototype.getParentDagrs = function() {
     var currMochila = this;
     $.ajax("getParents.php", {
@@ -265,7 +291,7 @@ Mochila.prototype.setDagrList = function(dagrList) {
 }
 
 
-Mochila.prototype.deleteDagr = function(guid){
+Mochila.prototype.deleteDagr = function(guid, recursive){
     console.log(guid);
     var currMochila = this;
     console.log("Mochila.deleteDagr()");
@@ -273,16 +299,17 @@ Mochila.prototype.deleteDagr = function(guid){
            {
                type: "POST",
                data: {
-                   guid: guid
+                   guid: guid,
+                   recursive: recursive
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    alert("error");
-                   this.display
+                   //this.display
                },
                success: function(data, textStatus, jqXHR){
                    console.log(data);
                    currMochila.displayDagrContents(currMochila.currDagr.guid);
-                   alert("look at console");
+                   
                }
                
                

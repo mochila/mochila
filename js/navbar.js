@@ -1,5 +1,7 @@
 $(document).ready(function() {
+    console.log("is this being called");
     $("input[name='search-type']").change(function(){
+        console.log("is this working");
         var searchType = $(this).next("label").text();
         var caret = $("<span/>").addClass("caret");
         defineSearchBox(searchType);
@@ -28,8 +30,38 @@ $(document).ready(function() {
 });
 
 
+function reachInitialization(){
+    var dagr_list = null;
+    console.log("reach init");
+    $.ajax("getAllGuidsAndTitles.php", {
+        type: "GET",
+        dataType: "json",
+        error: function (){
+            console.log("something is wrong");
+        },
+        success: function(data, message, jqXHR){
+            dagr_list = data;
+            console.log(data);
+            console.log(message);
+            $("#search-input").select2({
+                placeholder: "Select a DAGR",
+                data: $.map(dagr_list, function(d) {
+                    return {
+                        id: d.guid,
+                        text: d.title + "  -  " + d.guid 
+                    }
+                    
+                })
+            });
+        }
+    });
+    console.log(dagr_list);
+    
+}
+
 function defineSearchBox(searchType){
     searchType = searchType.toLowerCase();
+    console.log("Defining search");
     switch(searchType){
         case "orphan":
         case "sterile":
@@ -41,10 +73,15 @@ function defineSearchBox(searchType){
         case "file type":
         case "keyword":
         case "tag":
-        case "reach":
             $("#to-date, #to-text, #from-date").addClass("hidden");
+            $("#search-input").select2("destroy");
             $("#search-input").val("");
             $("#search-input").attr("type", "text").removeClass("hidden");
+            break;
+        case "reach":
+            $("#to-date, #to-text, #from-date").addClass("hidden");
+            reachInitialization();
+            
             break;
         case "size":
             $("#to-date, #to-text, #from-date").addClass("hidden");

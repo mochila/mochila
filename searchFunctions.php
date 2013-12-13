@@ -35,7 +35,7 @@ function free_search($term){
 }
 
 function author_search($term) {
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -47,7 +47,7 @@ function author_search($term) {
 }
 
 function date_search($date){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -59,7 +59,7 @@ function date_search($date){
 }
 
 function type_search($type){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -72,7 +72,7 @@ function type_search($type){
 }
 
 function title_search($title){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -84,7 +84,7 @@ function title_search($title){
 }
 
 function orphan_search(){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -117,21 +117,16 @@ function reach_search_helper($dagr_list, $guid, $level){
     return $reach_list;
 }
 
-function reach_search($dagr_title) {
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+function reach_search($super_parent) {
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS");
     $statement->execute();
     $statement->bind_result($guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
-    $super_parent = null;
     $dagr_list = array();
     while($statement->fetch()){
-        if (strcasecmp($dagr_title,$title) == 0){
-            $super_parent = $guid;
-        }
         $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
-        
     }
     $db->close();
     
@@ -144,8 +139,9 @@ function reach_search($dagr_title) {
     return $reach_list;
 }
 
+
 function size_search($size){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
         DAGRS natural join TAGS 
@@ -157,7 +153,7 @@ function size_search($size){
 }
 
 function sterile_search(){
-    $db = new mysqli("localhost", "root" , "root", "mochila_db");
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
       from DAGRS natural join TAGS
