@@ -11,7 +11,22 @@ var text_entry = require("sdk/panel").Panel({
   contentScriptFile: data.url("get-text.js")
 });
  
-// Listen for messages called "text-entered" coming from
+// When the panel is shown, send a request for the title json object
+// and pass it to the content script
+text_entry.on("show", function() {
+  // Send a get request to the mochila server for the dagr titles
+  var httpRequest = Request({
+    url: "http://mochila.coffeecupcoding.com/getTitles.php?",
+    onComplete: function (response) {
+      // Pass the json object to the content script
+      console.log(response.json);
+      text_entry.port.emit("show", response.json);
+    }
+
+  }).get();
+});
+
+// Listen for messages called "buttonpressed" coming from
 // the content script. The message payload is the text the user
 // entered.
 // In this implementation we'll just log the text to the console.

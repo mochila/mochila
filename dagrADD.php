@@ -17,19 +17,40 @@ function guid(){
     }
 }
 
+$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
+
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
 $dagrTags = $_GET['tags'];
+$dagrPON = $_GET['parentOn'];
+$dagrPD = $_GET['parentDagr'];
 
 // Generate a GUID
 $dagrGUID = guid();
 
 // Get the type of the input (will be HTML)
 $dagrType = 'HTML';
+$dagrPGUID = NULL;
 
-// Get the parent GUID (if there is one)
-$dagrPGUID = "ParentGUIDHere";
+/*************************************************************
+    Get the parent DAGR if one was selected
+**************************************************************/
+if ($dagrPON == 1) {
+  $getParentStmt = $mysqli->prepare("Select DAGR_GUID from DAGRS where DAGR_TITLE = ?");
 
+  // Bind parameters
+  $getParentStmt->bind_param("s", $dagrPDVALUE);
+  $dagrPDVALUE = $dagrPD;
+  $getParentStmt->bind_result($dagrPGUID);
+
+  // Execute statement
+  $getParentStmt->execute();
+
+  // Get the result
+  $getParentStmt->fetch();
+
+  $getParentStmt->close();
+}
 
 /***************************************************************
     Scrape the target URL to get metadata (date,size,author) for the DAGR.
@@ -52,8 +73,6 @@ $dagrAuthor = 'AuthorNameHere';
 /**************************************************************
    Add the dagr to the DAGRS table using a prepared statement.
 **************************************************************/
-
-$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
 
 // Prepare the statement
 $stmt = $mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
@@ -86,7 +105,7 @@ $addTags->bind_param("ss", $dagrGUIDVALUE, $tagVALUE);
 $dagrGUIDVALUE = $dagrGUID;
 
 // Split up the tags string into multiple strings
-$allTags = explode(";", dagrTags);
+$allTags = explode(";", $dagrTags);
 foreach ($allTags as $tag) {
   $tagVALUE = $tag;
   // Execute the statement
@@ -99,7 +118,16 @@ $addTags->close();
 /***************************************************************
   Add the GUID to the CHILD_DAGRS table if applicable
 ***************************************************************/
+if ($dagrPON == 1) {
+  $addChildDAGRstmt = $mysqli->prepare("INSERT INTO CHILD_DAGRS (PARENT_GUID, CHILD_GUID) VALUES(?,?)");
 
+  $addChildDAGRstmt->bind_param("ss", $dagrPGUIDVALUE, $dagrGUIDVALUE);
+  $dagrGUIDVALUE = $dagrGUID;
+  $dagrPGUIDVALUE = $dagrPGUID;
+
+  $addChildDAGRstmt->execute();
+  $addChildDAGRstmt->close();
+}
 
 /***************************************************************
   Echo the variables back to the client

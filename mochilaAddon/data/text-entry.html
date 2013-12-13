@@ -8,16 +8,24 @@
 <h2 style="margin-bottom:20;">DAGR CREATOR</h1></div>
 
 <div id="content" style="height:200px;width:200px;float:left;">
-  <div class="row">
+  <div class="row" style="margin-bottom:10px">
     <label for="dagrtitle">DAGR Title/Keyword*</label>
     <input type="text" id="dagrtitle" name="dagrtitle" required>
   </div>
-  <div class="row">
+  <div class="row" style="margin-bottom:10px">
     <label for="dagrtag">DAGR Tag</label>
     <input type="text" id="dagrtag" name="dagrtag" placeholder="separate tags with ;">
   </div>
+  <div class="row" style="margin-bottom:10px">
+    <label><input type="checkbox" id="useParent" value="AddToParent"> Add to Parent?</label>
+  </div>
+  <div class="row" style="margin-bottom:10px">
+    <label for="parentSelector">Parent DAGR</label>
+    <select id="parentSelector" style="width: 220px">
+    </select>
+  </div>
   <div class="row">
-    <input type="button" id="sbutton" value="Submit">
+    <input type="button" id="sbutton" value="Submit" style="width:100px">
   </div>
 </div>
 
