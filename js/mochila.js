@@ -9,31 +9,33 @@ function Mochila(dagr_list, currDagr) {
     };
     
     this.dagrs = {
-        initDagrNavigation: function () {
-            $(".dagr-item").click(function () {
-                console.log("DAGR Click");
-                mochila.displayDagrMetaData(this.id);
-            });
-            
-            $(".dagr-item .view-dagr").click(function () {
-                console.log("Dagr Shown");
-                var dagrId = $(this).parent().parent().parent().attr("id");
-                mochila.displayDagrContents(dagrId);
+        initDagrNavigation: function (mochila) {
+            $(mochila).on("dagrload", function() {
+                $(".dagr-item").click(function () {
+                    console.log("DAGR Click");
+                    mochila.displayDagrMetaData(this.id);
+                });
+                
+                $(".dagr-item .view-dagr").click(function () {
+                    console.log("Dagr Shown");
+                    var dagrId = $(this).parent().parent().parent().attr("id");
+                    mochila.displayDagrContents(dagrId);
+                    
+                });
+                
+                $("#goto-parent").click(function() {
+                    var guid = $(this).attr("data-parent");
+                    mochila.displayDagrContents(guid);
+                });
+                
+                $("#delete-dagr-modal").on("show.bs.modal", function(e){
+                    //TODO perform reach query
+                    //TODO populate the template
+                });
                 
             });
             
-            $("#goto-parent").click(function() {
-                var guid = $(this).attr("data-parent");
-                mochila.displayDagrContents(guid);
-            });
-            
-            $(".delete-dagr").click(function() {
-                var guid = $(this).parent().parent().parent().attr("id");
-                mochila.deleteDagr(guid);
-            });
-            
-        },
-        
+        }
     };
     
     this.metaData = {
@@ -104,20 +106,29 @@ function Mochila(dagr_list, currDagr) {
 }
 
 
-//Mochila.prototype.refreshDagr = function (guid) {
-//    $.ajax("getDagrs.php", {
-//        error: function (jqXHR, textStatus, errorThrown) {
-//            alert("error");
-//        },
-//        success: function(data, textStatus, jqXHR){
-//            console.log(data);
-//            alert("look at console");
-//            mochila.dagrList = data;
-//            $(this).trigger("dagrlistupdate", dagrList);
-//        }
-//    });
-//           
-//}
+Mochila.prototype.refreshDagr = function (guid) {
+    var currMochila = this;
+    console.log("REFRESH DAGR");
+    $.ajax("getDagr.php", {
+        type: "GET",
+        dataType: "json",
+        data: {
+            guid: guid
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("error");
+        },
+        
+        success: function(data, textStatus, jqXHR){
+            console.log(data);
+            alert("look at console");
+            currMochila.dagrList = data["children"];
+            currMochila.currDagr = data["parent"];
+            currMochila.refresh();
+        }
+    });
+    
+}
 
 Mochila.prototype.getDagr = function(guid) {
     for(var curr = 0; curr < this.dagrList.length; curr++){
@@ -219,10 +230,14 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
 
 Mochila.prototype.displayDagr = function(){
     console.log(this.dagrList);
-    var template = $("#dagrItemTemplate").html();
-    var html = Mustache.to_html(template, {dagrs: this.dagrList});
-    $("#dagr-contents-container").html(html);
-    $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
+    if(this.dagrList != null && this.dagrList.length > 0){
+        var template = $("#dagrItemTemplate").html();
+        var html = Mustache.to_html(template, {dagrs: this.dagrList});
+        $("#dagr-contents-container").html(html);
+        $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
+    } else {
+        $("#dagr-contents-container").html("This DAGR is Sterile");
+    }
     $("#metadata-container").addClass("hidden");
     $("#contents-container").attr("class", "col-md-12");
 }
@@ -236,7 +251,7 @@ Mochila.prototype.setDagrList = function(dagrList) {
 
 Mochila.prototype.deleteDagr = function(guid){
     console.log(guid);
-    var parent = this.getDagr(guid).parentGuid;
+    var currMochila = this;
     console.log("Mochila.deleteDagr()");
     $.ajax("dagrDelete.php",
            {
@@ -246,14 +261,33 @@ Mochila.prototype.deleteDagr = function(guid){
                },
                error: function (jqXHR, textStatus, errorThrown) {
                    alert("error");
+                   this.display
                },
                success: function(data, textStatus, jqXHR){
                    console.log(data);
+                   currMochila.displayDagrContents(currMochila.currDagr.guid);
                    alert("look at console");
                }
                
                
            });
+}
+
+Mochila.prototype.init = function() {
+    this.displayDagr();
+    this.dagrs.initDagrNavigation(this);
+    $(this).on("parentsLoaded", function() {
+        console.log("parentsLoaded");
+        this.metaData.init(this.parentList);
+        this.popups.init(this);
+    });
+    this.getParentDagrs();
+    $(this).trigger("dagrload");
+    
+}
+
+Mochila.prototype.refresh = function (){
+    this.init();
 }
 
 var MockData =  [
@@ -312,15 +346,6 @@ var MockData =  [
 
 $(document).ready(function(){
     mochila = new Mochila($dagr_info["children"],$dagr_info["parent"]);
-    mochila.displayDagr();
-    mochila.dagrs.initDagrNavigation();
-    $(mochila).on("parentsLoaded", function() {
-        console.log("parentsLoaded");
-        mochila.metaData.init(mochila.parentList);
-        mochila.popups.init(mochila);
-    });
-    mochila.getParentDagrs();
-    
-    //Pull date from the server and setTheDagrList
+    mochila.init();
     
 });

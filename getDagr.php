@@ -26,8 +26,8 @@ function getDagr($guid){
     }    // echo $statement;
     $statement->execute();
     $statement->bind_result($dagr_guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent);
-    $dagr_list = null;
-    
+    $dagr_list["children"] = array();
+    $dagr_list["parent"] = array("guid" => null, "title" => null, "date" => null, "size" => 0, "type" => "parent", "file_type" => null, "location" => null, "parentGuid" => null, "tags" => array());
     while($statement->fetch()){
         //$dagr_list[] = "{ guid: ".$dagr_guid.", title: ".$title.", date: ".$date.", size: ".$size.", location: ".$loc.", author: ".$author.", parentGuid: ".$parent."}";
         $dagr["guid"] = $dagr_guid;
@@ -58,32 +58,6 @@ $dagr_list = getDagr($guid);
 
 ?>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Mochila</title>
-        <?php include("header.inc"); ?>
-        <script>
-            var $dagr_info = <?php echo json_encode($dagr_list); ?>;
-            console.log($dagr_info);
-        </script>
-    </head>
-    <body>
-        
-        <?php include("navbar.inc"); ?>
-        
-        <?php include("html/dagrlist.html"); ?>   
-        
-        <?php include("html/add-tag-modal.html"); ?>
-        
-        <?php include("html/dagrListTemplate.html"); ?>
-        <?php include("html/dagrMetadataTemplate.html") ?>
-        
-        <?php include("footer.inc"); ?>
-        
-        
-        
-    </body>
-</html>
+<?php include("main.php"); ?>
 
 

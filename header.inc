@@ -16,7 +16,7 @@ $baseUrl='/mochila';
 <link href="css/dagrlist.css" rel="stylesheet" type="text/css">
 <link href="css/popover.css" rel="stylesheet" type="text/css">
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="js/jquery-2.0.3.js"></script>
 <script type="text/javascript" src="tokenfield/bootstrap-tokenfield/bootstrap-tokenfield.min.js"></script>
 <script type="text/javascript" src="tokenfield/assets/typeahead.min.js"></script>
 <script type="text/javascript" src="select2-3.4.5/select2.js"></script>

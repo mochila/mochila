@@ -7,7 +7,7 @@ function getParents() {
     
     $statement->execute();
     $statement->bind_result($dagr_guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent);
-    $dagr_list = null;
+    $dagr_list = array();
     while($statement->fetch()){
         $dagr["guid"] = $dagr_guid;
         $dagr["title"] = $title;
