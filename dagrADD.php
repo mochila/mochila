@@ -17,7 +17,7 @@ function guid(){
     }
 }
 
-$mysqli = new mysqli("localhost", "root", "", "mochila_db");
+$mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
 
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
