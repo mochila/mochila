@@ -24,7 +24,8 @@ function Mochila(dagr_list, currDagr) {
                 });
                 
                 $("#goto-parent").click(function() {
-                    var guid = $(this).attr("data-parent");
+                    var guid = mochila.currDagr.parentGuid;
+                    console.log(mochila.currDagr.parentGuid);
                     mochila.displayDagrContents(guid);
                 });
                 
@@ -227,7 +228,7 @@ Mochila.prototype.displayDagrContents = function(guid) {
     
     
     if (dagr == null){
-        this.displayParentDagr(null);
+        this.displayParentDagr(guid);
     } else if (dagr.type == "parent") {
         this.displayParentDagr(dagr.guid);
     } else if(dagr.type == "url"){
