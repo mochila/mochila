@@ -56,12 +56,18 @@
     background-color:inherit;
 }
 
-#metadata-container {
-     padding: 10px;
+#dagr-metadata {
+    position:fixed;
 }
 
+#metadata-container {
+    padding: 10px;
+}
+
+
+
 div.form-group div,label {
-     margin-top:10px;
+    margin-top:10px;
 }
 
 

@@ -80,9 +80,9 @@ function Mochila(dagr_list, currDagr) {
                     var guid = $("#guid-metadata").val();
                     mochila.displayDagrMetaData(guid);
                 });
-                                            
-                                            
-                                            
+                
+                
+                
                 
                 
             });
@@ -274,12 +274,13 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
         $("#metadata-container").slideDown();
         $("#dagr-contents-container").removeClass("container");
         $("#guid-metadata").val(guid);
-        $("#contents-container").attr("class", "col-md-10")
         $("#dagr-title").val(dagr.title);
         $("#author-metadata").val(dagr.author);
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
         $("#type-metadata").html(dagr.file_type);
+        $("#contents-container").attr("class", "col-md-10")
+        $("#contents-container").addClass("col-md-offset-2");
         if(dagr.parentGuid != null){
             $("#dagr-parent").select2("val", dagr.parentGuid);
         } else {
@@ -293,6 +294,7 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
 }
 
 Mochila.prototype.displayDagr = function(){
+    var currMochila = this;
     console.log(this.dagrList);
     if(this.dagrList != null && this.dagrList.length > 0){
         var template = $("#dagrItemTemplate").html();
@@ -300,7 +302,20 @@ Mochila.prototype.displayDagr = function(){
         $("#dagr-contents-container").html(html);
         $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
     } else {
-        $("#dagr-contents-container").html("This DAGR is Sterile");
+        
+        if(this.currDagr.guid == null){
+            $("#dagr-contents-container").load("html/EmptyDagr.html #no-dagrs");
+            
+        } else { 
+            $("#dagr-contents-container").load("html/EmptyDagr.html #sterile-dagr", function(){
+                $("#return-up").click(function(){
+                    var guid = currMochila.currDagr.parentGuid;
+                    currMochila.displayDagrContents(guid);
+                    console.log(mochila);
+                });
+                
+            });
+        }
     }
     $("#metadata-container").hide();
     $("#contents-container").attr("class", "col-md-12");
@@ -340,36 +355,36 @@ Mochila.prototype.deleteDagr = function(guid, recursive){
 
 Mochila.prototype.updateDagr = function(){
     console.log("updateDagr");
-        var currMochila = this;
-        var guid = $("#guid-metadata").val();
-        var title = $("#dagr-title").val();
-        var author = $("#author-metadata").val();
-        var parent = $("#dagr-parent").val();
-        var tags = $("#dagr-tags").val().split(", ");
-        console.log(tags);
-        var data = {
-            guid: guid,
-            title: title,
-            author: author,
-            parent: parent,
-            tags: tags
-        };
-        
-        
-        $.ajax("updateDagr.php", {
-            type: "POST",
-            data: data,
-            error: function () {
-                console.log("updateDagr.php Error");
-                
-            },
-            success: function(data, message, jqXHR){
-                console.log("Dagr Updated");
-                currMochila.displayDagrContents(currMochila.currDagr.guid);
-            }
+    var currMochila = this;
+    var guid = $("#guid-metadata").val();
+    var title = $("#dagr-title").val();
+    var author = $("#author-metadata").val();
+    var parent = $("#dagr-parent").val();
+    var tags = $("#dagr-tags").val().split(", ");
+    console.log(tags);
+    var data = {
+        guid: guid,
+        title: title,
+        author: author,
+        parent: parent,
+        tags: tags
+    };
+    
+    
+    $.ajax("updateDagr.php", {
+        type: "POST",
+        data: data,
+        error: function () {
+            console.log("updateDagr.php Error");
             
-        });
+        },
+        success: function(data, message, jqXHR){
+            console.log("Dagr Updated");
+            currMochila.displayDagrContents(currMochila.currDagr.guid);
+        }
         
+    });
+    
     
 }
 
