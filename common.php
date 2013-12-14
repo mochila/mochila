@@ -16,5 +16,18 @@ function format_dagr_list($list){
     return $formatted_list;
 }
 
+function dagr_add($guid, $title, $date, $size, $type, $file_type, $location, $author, $parent){
+    $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
+    $statement = $db->prepare("
+    insert into DAGRS 
+    values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $statement->bind_param("sssisssss", $guid, $title, $date, $size, $type, $file_type, $location, $author, $parent);
+//    echo("binded");
+    $statement->execute();
+    //  $statement->close();
+    $db->close();
+}
+
+
 
 ?>
