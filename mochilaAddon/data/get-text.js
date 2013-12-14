@@ -15,8 +15,10 @@ sbutton.addEventListener("click", function() {
   // Get the input from the 2 text fields
   var titleInput = document.getElementById("dagrtitle");
   var tagInput = document.getElementById("dagrtag");
+  var authorInput = document.getElementById("dagrauthor");
   var dtitle = titleInput.value;
   var dtag = tagInput.value;
+  var dauthor = authorInput.value;
 
   // Get the value from the Parent checkbox and selector
   var parentOnInput = document.getElementById("useParent");
@@ -31,10 +33,15 @@ sbutton.addEventListener("click", function() {
     parentSelect = 0;
   }
   
-  // Form the 4 inputs into url parameters
-  var text = "&title="+dtitle+"&tags="+dtag+"&parentOn="+parentOn+"&parentDagr="+parentSelect;
+  // Form the 5 inputs into url parameters
+  var text = "&title="+dtitle+"&tags="+dtag+"&author="+dauthor+"&parentOn="+parentOn+"&parentDagr="+parentSelect;
 
   var nospacetext = text.replace(/\s/gi,"_");
 
   self.port.emit("buttonpressed", nospacetext);
+
+  // Reset all the text fields to blank
+  titleInput.value = "";
+  tagInput.value = "";
+  authorInput.value = "";
 });
