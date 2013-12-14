@@ -72,6 +72,19 @@ function Mochila(dagr_list, currDagr) {
                     
                 });
                 
+                $("#update-metadata").click(function(e){
+                    mochila.updateDagr();
+                });
+                
+                $("#reset-metadata").click(function(e){
+                    var guid = $("#guid-metadata").val();
+                    mochila.displayDagrMetaData(guid);
+                });
+                                            
+                                            
+                                            
+                
+                
             });
             
         }
@@ -242,7 +255,7 @@ Mochila.prototype.displayFile = function(fileLocation){
             console.log(data);
             window.location.href = data;
         }
-    
+        
     });
     //On success display pdf
     //window.location.href = "profile.pdf";
@@ -259,10 +272,10 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
     console.log(dagr);
     if(dagr != null){
         $("#metadata-container").slideDown();
-        
+        $("#guid-metadata").val(guid);
         $("#contents-container").attr("class", "col-md-10")
         $("#dagr-title").val(dagr.title);
-        $("#author-metadata").html(dagr.author);
+        $("#author-metadata").val(dagr.author);
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
         $("#type-metadata").html(dagr.file_type);
@@ -322,6 +335,41 @@ Mochila.prototype.deleteDagr = function(guid, recursive){
                
                
            });
+}
+
+Mochila.prototype.updateDagr = function(){
+    console.log("updateDagr");
+        var currMochila = this;
+        var guid = $("#guid-metadata").val();
+        var title = $("#dagr-title").val();
+        var author = $("#author-metadata").val();
+        var parent = $("#dagr-parent").val();
+        var tags = $("#dagr-tags").val().split(", ");
+        console.log(tags);
+        var data = {
+            guid: guid,
+            title: title,
+            author: author,
+            parent: parent,
+            tags: tags
+        };
+        
+        
+        $.ajax("updateDagr.php", {
+            type: "POST",
+            data: data,
+            error: function () {
+                console.log("updateDagr.php Error");
+                
+            },
+            success: function(data, message, jqXHR){
+                console.log("Dagr Updated");
+                currMochila.displayDagrContents(currMochila.currDagr.guid);
+            }
+            
+        });
+        
+    
 }
 
 Mochila.prototype.search = function (){

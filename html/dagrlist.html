@@ -5,9 +5,15 @@
                 <div class="form-group">
                     <input id="dagr-title" class="form-control" type="text" placeholder="File title">
                     <div class="dagr-metadata text">
-                        <div><span class="text-left"><b>Author: </b></span><span id="author-metadata"></span></div>
+                        <div class="row">
+                            <label class="col-xs-4" for="author-metadata"><b>Author: </b></label>
+                            <div class="col-xs-8">
+                                <input class="form-control" id="author-metadata">
+                            </div>
+                        </div>
+                        
                         <div><span class="text-left"><b>Date: </b></span><span id="date-metadata"> </span></div>
-                        <div><span class="text-left"><b>Size: </b></span><span id="size-metadata"> </span></div>
+                        <div><span class="text-left"><b>Size: </b></span><span id="size-metadata"> </span>mb</div>
                         <div><span class="text-left"><b>Type: </b></span><span id="type-metadata"></span></div>
                         
                     </div>
@@ -19,13 +25,13 @@
                     <div>
                         <label for="dagr-tags">Tags</label>
                         <input type="text" class="form-control" id="dagr-tags">     
-                        
+                        <input type="hidden" id="guid-metadata">
                     </div>
                     
                 </div>
                 <div class="pull-right btn-group"> 
-                    <button type="button" class="btn btn-default">Reset</button>
-                    <button type="button" class="btn btn-primary">Update</button>
+                    <button id="reset-metadata" type="button" class="btn btn-default">Reset</button>
+                    <button id="update-metadata" type="button" class="btn btn-primary">Update</button>
                 </div>
             </form>
         </div>
