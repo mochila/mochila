@@ -38,6 +38,7 @@ $mysqli = new mysqli("localhost", "root", "dude1313", "mochila_db");
 $targetURL = $_GET['q'];
 $dagrTitle = $_GET['title'];
 $dagrTags = $_GET['tags'];
+$dagrAuthor = $_GET['author'];
 $dagrPON = $_GET['parentOn'];
 $dagrPD = $_GET['parentDagr'];
 
@@ -69,7 +70,7 @@ if ($dagrPON == 1) {
 }
 
 /***************************************************************
-    Scrape the target URL to get metadata (date,size,author) for the DAGR.
+    Use CURL to get the size and last modified date of html
 ***************************************************************/
 // Get the size and date of the html
 $curl = curl_init($targetURL);
@@ -96,10 +97,6 @@ if ($dagrDateUNF == -1) {
 }
 $dt = new DateTime("@$dagrDateUNF");
 $dagrDate = $dt->format('d/m/y');
-
-
-// Get the author of the URL
-$dagrAuthor = 'AuthorNameHere';
 
 /**************************************************************
    Add the dagr to the DAGRS table using a prepared statement.
@@ -200,7 +197,7 @@ foreach($html->find('a') as $link) {
 
     curl_close($linkCurl);
 
-    $linkAuthor = "Link Author Here";
+    $linkAuthor = NULL;
     $linkPGUID = $dagrGUID;
     $linkFileType = 'HTML';
 
@@ -213,9 +210,9 @@ foreach($html->find('a') as $link) {
 // Get all images
 $curlImgNum = 1;
 foreach($html->find('img') as $image) {
-  echo $image->src;
   // Append the image src to the end of the targetURL
   $imgURL = $targetURL . $image->src;
+
   // Get the size and last modified date of image
   $imgCurl = curl_init($imgURL);
   curl_setopt($imgCurl, CURLOPT_RETURNTRANSFER,TRUE);
@@ -243,7 +240,7 @@ foreach($html->find('img') as $image) {
   curl_close($imgCurl);  
 
   // Get the author, parent GUID, and file type
-  $imgAuthor = "Image author here";
+  $imgAuthor = NULL;
   $imgPGUID = $dagrGUID;
   $imgFileType = 'img';
 
@@ -257,5 +254,5 @@ foreach($html->find('img') as $image) {
 ***************************************************************/
 
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
-//echo $responseMessage;
+echo $responseMessage;
 ?>
