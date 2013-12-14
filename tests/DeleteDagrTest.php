@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/dagrDelete.php");
+require_once("/home/mochila/mochila/dagrDelete.php");
 
 
 class DeleteDagrTest extends PHPUnit_Framework_TestCase    

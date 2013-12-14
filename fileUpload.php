@@ -18,7 +18,7 @@ if($parent_guid == "" || $parent_guid == "-1"){
     
 }
 
-$storage_location = "/home/nerraw/uploads/".$parent_guid;
+$storage_location = "/home/mochila/uploads/".$parent_guid;
 
 
 

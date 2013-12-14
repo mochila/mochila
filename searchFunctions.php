@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/common.php");
+require_once("/home/mochila/mochila/common.php");
 
 function execute_text_search($statement){
     $statement->execute();

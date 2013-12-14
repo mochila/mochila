@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/searchFunctions.php");
+require_once("/home/mochila/mochila/searchFunctions.php");
 $guid = $_GET["guid"];
 $dagr_list = reach_search($guid);
 
