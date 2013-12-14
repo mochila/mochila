@@ -1,9 +1,16 @@
 <?php
 
 $location = $_POST["location"];
-$script = "cp ".$location." /var/www/uploads/";
-$location = "/uploads".strrchr($location, "/");
-shell_exec($script);
+
+if(file_exists($location)){
+    $script = "cp ".$location." /var/www/uploads/";
+    $location = "/uploads".strrchr($location, "/");
+    shell_exec($script);
+} else {
+    $location =  "fileNotFound.php";
+    
+    
+}
 echo $location;
 
 ?>
