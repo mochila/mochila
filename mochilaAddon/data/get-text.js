@@ -1,6 +1,5 @@
 // Listen for the show message and populate selector
 self.port.on("show", function(myjson) {
-  var selarr = ["hiya", "hey"];
   var select = document.getElementById("parentSelector");
   for (var i = 0; i < myjson.length; i++) {
     var opt = document.createElement('option');

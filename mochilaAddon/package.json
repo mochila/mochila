@@ -2,8 +2,8 @@
   "name": "mochilaaddon",
   "fullName": "mochilaAddon",
   "id": "jid1-ZkLs2BTERgJRqg",
-  "description": "a basic add-on",
-  "author": "",
+  "description": "Firefox add-on that allow user to create and add DAGRs containing metainfo about the current URL",
+  "author": "Stephen Haworth and Warren Harper",
   "license": "MPL 2.0",
   "version": "0.1"
 }
