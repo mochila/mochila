@@ -299,7 +299,20 @@ Mochila.prototype.displayDagr = function(){
     console.log(this.dagrList);
     if(this.dagrList != null && this.dagrList.length > 0){
         var template = $("#dagrItemTemplate").html();
-        var html = Mustache.to_html(template, {dagrs: this.dagrList});
+        var html = Mustache.to_html(template, {
+            dagrs: this.dagrList, 
+            ellipsis: function (){
+                return function(text, render){
+                    var toDisplay = render(text);
+                    if(toDisplay.length > 40){
+                        return toDisplay.substring(0, 40) + "...";
+                    } else {
+                        return toDisplay;
+                    }
+                }
+            }
+        });
+        
         $("#dagr-contents-container").html(html);
         $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
     } else {
