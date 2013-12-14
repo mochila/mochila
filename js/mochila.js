@@ -272,6 +272,7 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
     console.log(dagr);
     if(dagr != null){
         $("#metadata-container").slideDown();
+        $("#dagr-contents-container").removeClass("container");
         $("#guid-metadata").val(guid);
         $("#contents-container").attr("class", "col-md-10")
         $("#dagr-title").val(dagr.title);
