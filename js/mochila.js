@@ -11,15 +11,15 @@ function Mochila(dagr_list, currDagr) {
     this.dagrs = {
         initDagrNavigation: function (mochila) {
             $(mochila).on("dagrload", function() {
-                $(".dagr-item").click(function () {
+                $(".dagr-item .dagr-title").click(function () {
                     console.log("DAGR Click");
-                    mochila.displayDagrMetaData(this.id);
+                    mochila.displayDagrContents($(this).parent().attr("id"));
                 });
                 
                 $(".dagr-item .view-dagr").click(function () {
                     console.log("Dagr Shown");
                     var dagrId = $(this).parent().parent().parent().attr("id");
-                    mochila.displayDagrContents(dagrId);
+                    mochila.displayDagrMetaData(dagrId);
                     
                 });
                 
