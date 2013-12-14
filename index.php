@@ -1,3 +1,10 @@
+<?php
+//shell_exec("rm /var/www/uploads/ *"); 
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>

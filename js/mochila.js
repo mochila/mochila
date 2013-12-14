@@ -218,9 +218,9 @@ Mochila.prototype.displayDagrContents = function(guid) {
     } else if (dagr.type == "parent") {
         this.displayParentDagr(dagr.guid);
     } else if(dagr.type == "url"){
-        this.displayUrl(currDagr.content.contentLocation);
+        this.displayUrl(dagr.location);
     } else {
-        this.displayFile(currDagr.content.contentLocation);
+        this.displayFile(dagr.location);
     }
     
 }
@@ -234,10 +234,18 @@ Mochila.prototype.displayParentDagr = function(guid) {
 }
 
 Mochila.prototype.displayFile = function(fileLocation){
-    //TODO
-    //Grab file and convert to pdf
+    console.log(fileLocation);
+    $.ajax("viewDagr.php", {
+        type: "POST",
+        data:{location: fileLocation},
+        success: function(data, message, jqHXR){
+            console.log(data);
+            window.location.href = data;
+        }
+    
+    });
     //On success display pdf
-    window.location.href = "profile.pdf";
+    //window.location.href = "profile.pdf";
     //On failure just use the regular file and not the pdf
 }
 
