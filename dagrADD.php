@@ -255,6 +255,9 @@ foreach($linkList as $link) {
         $linkPGUID = $dagrGUID;
         $linkFileType = 'HTML';
         $linkTitle = trim($link->plaintext);
+        if($linkTitle == ""){
+            $linkTitle = $linkURL;
+        }
         
         // Add the link to the database
         linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $linkTitle, $curLinkNum, $linkPGUID, $mysqli);
@@ -301,6 +304,9 @@ foreach($html->find('img') as $image) {
     $imgPGUID = $dagrGUID;
     $imgFileType = 'img';
     $imageTitle = trim($image->alt);
+    if($imageTitle == ""){
+        $imageTitle = $imgURL;
+    }
     
     // Add the image to the DAGR table
     linkAdd($imgURL, $imgSize, $imgAuthor, $imgDate, $imgFileType, $imageTitle, $curlImgNum, $imgPGUID, $mysqli);
