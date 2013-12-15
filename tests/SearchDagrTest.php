@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/searchFunctions.php");
+require_once("/home/mochila/mochila/searchFunctions.php");
 
 class SearchDagrTest extends PHPUnit_Framework_TestCase
 {
@@ -122,7 +122,7 @@ class SearchDagrTest extends PHPUnit_Framework_TestCase
 //        $this->db->close();
         //print "Tear down Called";
     }
-//    
+    
 //    public function testFreeSearch() {
 //        $dagr_list = free_search("sub");
 //        $this->assertEquals(sizeof($dagr_list), 3, "Incorrect number of GUIDS returned");
@@ -201,13 +201,13 @@ class SearchDagrTest extends PHPUnit_Framework_TestCase
 //    }
 //    
 //    public function testReachSearch() {
-//        $dagr_list = reach_search("title");
+//        $dagr_list = reach_search("1");
 //        $this->assertEquals(5, sizeof($dagr_list));
 //        foreach($dagr_list as $dagr){
 //            $this->assertContains($dagr["guid"], array("1","2", "3", "4", "5"));
 //        }
 //        
-//        $dagr_list = reach_search("sub container");
+//        $dagr_list = reach_search("4");
 //        $this->assertEquals(sizeof($dagr_list), 2);
 //        foreach($dagr_list as $dagr){
 //            $this->assertContains($dagr["guid"], array("4", "5"));

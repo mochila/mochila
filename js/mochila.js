@@ -11,20 +11,25 @@ function Mochila(dagr_list, currDagr) {
     this.dagrs = {
         initDagrNavigation: function (mochila) {
             $(mochila).on("dagrload", function() {
-                $(".dagr-item").click(function () {
+                $(".dagr-item .dagr-title").click(function () {
                     console.log("DAGR Click");
-                    mochila.displayDagrMetaData(this.id);
+                    mochila.displayDagrContents($(this).parent().attr("id"));
+                });
+                
+                $("#location-metadata").click(function() {
+                    mochila.displayDagrContents($("#guid-metadata").val());
                 });
                 
                 $(".dagr-item .view-dagr").click(function () {
                     console.log("Dagr Shown");
                     var dagrId = $(this).parent().parent().parent().attr("id");
-                    mochila.displayDagrContents(dagrId);
+                    mochila.displayDagrMetaData(dagrId);
                     
                 });
                 
                 $("#goto-parent").click(function() {
-                    var guid = $(this).attr("data-parent");
+                    var guid = mochila.currDagr.parentGuid;
+                    console.log(mochila.currDagr.parentGuid);
                     mochila.displayDagrContents(guid);
                 });
                 
@@ -72,6 +77,19 @@ function Mochila(dagr_list, currDagr) {
                     
                 });
                 
+                $("#update-metadata").click(function(e){
+                    mochila.updateDagr();
+                });
+                
+                $("#reset-metadata").click(function(e){
+                    var guid = $("#guid-metadata").val();
+                    mochila.displayDagrMetaData(guid);
+                });
+                
+                
+                
+                
+                
             });
             
         }
@@ -117,6 +135,37 @@ function Mochila(dagr_list, currDagr) {
                     createSearchChoice: function(term){
                         return {id: "-1 "+term, value:term, text:term};
                     }
+                });
+                
+                $("#url-upload-submit").click(function(){
+                    var url = $("#dagr-url-upload").val();
+                    if(url.indexOf("http") != 0){
+                        url = "http://" + url;
+                    }
+                    
+                    var parent = $("#url-parent-dagr").val()
+                    
+                    $.ajax("dagrADD.php", {
+                        type: "GET",
+                        data: {
+                            q: url,
+                            title: null,
+                            tags: null,
+                            parentDagr: parent,
+                            parentOn: 1,
+                            author: null
+                        },
+                        error: function(){
+                            console.log("time to cry");
+                        },
+                        success: function(data, message, jqHXR){
+                            mochila.displayDagrContents(mochila.currDagr.guid);
+                        }
+                        
+                        
+                    });
+                    
+                    
                 });
             }
         },
@@ -214,7 +263,7 @@ Mochila.prototype.displayDagrContents = function(guid) {
     
     
     if (dagr == null){
-        this.displayParentDagr(null);
+        this.displayParentDagr(guid);
     } else if (dagr.type == "parent") {
         this.displayParentDagr(dagr.guid);
     } else if(dagr.type == "url"){
@@ -242,7 +291,7 @@ Mochila.prototype.displayFile = function(fileLocation){
             console.log(data);
             window.location.href = data;
         }
-    
+        
     });
     //On success display pdf
     //window.location.href = "profile.pdf";
@@ -259,13 +308,16 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
     console.log(dagr);
     if(dagr != null){
         $("#metadata-container").slideDown();
-        
-        $("#contents-container").attr("class", "col-md-10")
+        $("#dagr-contents-container").removeClass("container");
+        $("#guid-metadata").val(guid);
         $("#dagr-title").val(dagr.title);
-        $("#author-metadata").html(dagr.author);
+        $("#author-metadata").val(dagr.author);
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
         $("#type-metadata").html(dagr.file_type);
+        $("#location-metadata").html(dagr.location);
+        $("#contents-container").attr("class", "col-md-10")
+        $("#contents-container").addClass("col-md-offset-2");
         if(dagr.parentGuid != null){
             $("#dagr-parent").select2("val", dagr.parentGuid);
         } else {
@@ -279,14 +331,41 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
 }
 
 Mochila.prototype.displayDagr = function(){
+    var currMochila = this;
     console.log(this.dagrList);
     if(this.dagrList != null && this.dagrList.length > 0){
         var template = $("#dagrItemTemplate").html();
-        var html = Mustache.to_html(template, {dagrs: this.dagrList});
+        var html = Mustache.to_html(template, {
+            dagrs: this.dagrList, 
+            ellipsis: function (){
+                return function(text, render){
+                    var toDisplay = render(text);
+                    if(toDisplay.length > 40){
+                        return toDisplay.substring(0, 40) + "...";
+                    } else {
+                        return toDisplay;
+                    }
+                }
+            }
+        });
+        
         $("#dagr-contents-container").html(html);
         $("#goto-parent").attr("data-parent", this.currDagr==null ? null :this.currDagr.parentGuid);
     } else {
-        $("#dagr-contents-container").html("This DAGR is Sterile");
+        
+        if(this.currDagr.guid == null){
+            $("#dagr-contents-container").load("html/EmptyDagr.html #no-dagrs");
+            
+        } else { 
+            $("#dagr-contents-container").load("html/EmptyDagr.html #sterile-dagr", function(){
+                $("#return-up").click(function(){
+                    var guid = currMochila.currDagr.parentGuid;
+                    currMochila.displayDagrContents(guid);
+                    console.log(mochila);
+                });
+                
+            });
+        }
     }
     $("#metadata-container").hide();
     $("#contents-container").attr("class", "col-md-12");
@@ -322,6 +401,41 @@ Mochila.prototype.deleteDagr = function(guid, recursive){
                
                
            });
+}
+
+Mochila.prototype.updateDagr = function(){
+    console.log("updateDagr");
+    var currMochila = this;
+    var guid = $("#guid-metadata").val();
+    var title = $("#dagr-title").val();
+    var author = $("#author-metadata").val();
+    var parent = $("#dagr-parent").val();
+    var tags = $("#dagr-tags").val().split(", ");
+    console.log(tags);
+    var data = {
+        guid: guid,
+        title: title,
+        author: author,
+        parent: parent,
+        tags: tags
+    };
+    
+    
+    $.ajax("updateDagr.php", {
+        type: "POST",
+        data: data,
+        error: function () {
+            console.log("updateDagr.php Error");
+            
+        },
+        success: function(data, message, jqXHR){
+            console.log("Dagr Updated");
+            currMochila.displayDagrContents(currMochila.currDagr.guid);
+        }
+        
+    });
+    
+    
 }
 
 Mochila.prototype.search = function (){

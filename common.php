@@ -21,10 +21,16 @@ function dagr_add($guid, $title, $date, $size, $type, $file_type, $location, $au
     $statement = $db->prepare("
     insert into DAGRS 
     values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $parent_size_update = $db->prepare("update DAGRS set DAGR_SIZE=DAGR_SIZE+? where DAGR_GUID=?");
     $statement->bind_param("sssisssss", $guid, $title, $date, $size, $type, $file_type, $location, $author, $parent);
-//    echo("binded");
+    //    echo("binded");
     $statement->execute();
-    //  $statement->close();
+    
+    $parent_size_update->bind_param("is", $size, $parent);
+    $parent_size_update->execute();
+    
+    $db->commit();
+    $statement->close();
     $db->close();
 }
 

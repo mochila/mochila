@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/searchFunctions.php");
+require_once("/home/mochila/mochila/searchFunctions.php");
 $searchtype = $_GET["type"];
 $result_list = array();
 $dagr_list = array();

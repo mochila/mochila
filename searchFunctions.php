@@ -1,5 +1,5 @@
 <?php
-require_once("/home/nerraw/mochila/common.php");
+require_once("/home/mochila/mochila/common.php");
 
 function execute_text_search($statement){
     $statement->execute();
@@ -8,6 +8,7 @@ function execute_text_search($statement){
     while($statement->fetch()){
         $dagr_list = add_dagr_to_list($dagr_list, $guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
     }
+    $statement->close();
     $dagr_list = format_dagr_list($dagr_list);
     return $dagr_list;
     
@@ -20,7 +21,7 @@ function free_search($term){
         $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
         $statement = $db->prepare(
             "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID)
         where DAGR_TITLE LIKE ?
         or DAGR_FILE_TYPE LIKE ?
         or DAGR_FILE_LOC LIKE ?
@@ -38,7 +39,7 @@ function author_search($term) {
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGRS.DAGR_GUID=TAGS.DAGR_GUID and LOWER(DAGR_AUTHOR) LIKE LOWER(?)");
     $statement->bind_param("s", $term);
     $dagr_list = execute_text_search($statement);
@@ -50,7 +51,7 @@ function date_search($date){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGRS.DAGR_GUID=TAGS.DAGR_GUID and DAGR_DATE=?");
     $statement->bind_param("s", $date);
     $dagr_list = execute_text_search($statement);
@@ -62,10 +63,12 @@ function type_search($type){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGR_TYPE LIKE ? or DAGR_FILE_TYPE LIKE ?");
+    $type = "%".$type."%";
     $statement->bind_param("ss", $type, $type);
     $dagr_list = execute_text_search($statement);
+    $db->commit();
     $db->close();
     return $dagr_list;
     
@@ -75,7 +78,7 @@ function title_search($title){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGR_TITLE LIKE ?");
     $statement->bind_param("s", $title);
     $dagr_list = execute_text_search($statement);
@@ -87,7 +90,7 @@ function orphan_search(){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGR_PARENT_GUID is NULL");
     $dagr_list = execute_text_search($statement);
     $db->close();
@@ -121,7 +124,7 @@ function reach_search($super_parent) {
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS");
+        DAGRS left join TAGS using (DAGR_GUID)");
     $statement->execute();
     $statement->bind_result($guid, $title, $date, $size, $type, $file_type, $loc, $author, $parent, $tag);
     $dagr_list = array();
@@ -144,7 +147,7 @@ function size_search($size){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * from 
-        DAGRS natural join TAGS 
+        DAGRS left join TAGS using (DAGR_GUID) 
         where DAGR_SIZE=?");
     $statement->bind_param("s", $size);
     $dagr_list = execute_text_search($statement);
@@ -156,7 +159,7 @@ function sterile_search(){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
-      from DAGRS natural join TAGS
+      from DAGRS left join TAGS using (DAGR_GUID)
       where DAGR_TYPE LIKE 'parent'
       and DAGR_GUID not in (
       select distinct d1.DAGR_GUID 
@@ -172,7 +175,7 @@ function tag_search($tag){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
-        from DAGRS natural join TAGS
+        from DAGRS left join TAGS using (DAGR_GUID)
         where TAG_TITLE = ?");
     
     $statement->bind_param("s", $tag);
@@ -185,7 +188,7 @@ function time_range_search($start_time, $end_time){
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
     $statement = $db->prepare(
         "select * 
-        from DAGRS natural join TAGS
+        from DAGRS left join TAGS using (DAGR_GUID)
         where DAGR_DATE >= ? and DAGR_DATE <= ?");
     
     $statement->bind_param("ss", $start_time, $end_time);

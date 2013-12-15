@@ -2,11 +2,11 @@
 <div class="list-group">
     {{#dagrs}}
     <div id="{{guid}}" class="dagr-item media list-group-item">
-        <a href="#">
+        <a href="#" class="dagr-title">
             <span class="pull-left" href="#">
                 <img class="media-object" src="images/{{type}}.png" alt="Mochila"/></span>
             <span class="media-body">
-                <h1 class="media-heading">{{title}}</h1>
+                <h1 class="media-heading">{{#ellipsis}}{{title}}{{/ellipsis}}</h1>
             </span>
         </a> 
         <div href="#" class="pull-right" >
@@ -14,11 +14,7 @@
 
                 <button type="button" class="btn btn-default view-dagr">
                     <div class="glyphicon glyphicon-eye-open"></div>
-                    <div><h6>view</h6></div>
-                </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#add-tag-modal">
-                    <div class="glyphicon glyphicon-tag"></div>
-                    <div><h6>add tag</h6></div>
+                    <div><h6>view metadata</h6></div>
                 </button>
                 <button type="button" class="btn btn-default delete-dagr" data-toggle="modal" data-target="#delete-dagr-modal">
                     <div class="glyphicon glyphicon-trash"></div>

@@ -18,7 +18,7 @@ if($parent_guid == "" || $parent_guid == "-1"){
     
 }
 
-$storage_location = "/home/nerraw/uploads/".$parent_guid;
+$storage_location = "/home/mochila/uploads/".$parent_guid;
 
 
 
@@ -32,7 +32,7 @@ foreach($_FILES["user-files"]["error"] as $key=>$error){
         $name = $_FILES["user-files"]["name"][$key];
         $tmp_name = $_FILES["user-files"]["tmp_name"][$key];
         $size = $_FILES["user-files"]["size"][$key]/1024;
-        $type = strrchr($name, ".");
+        $type = substr(strrchr($name, "."), 1);
         $dagr_type = "file";
         $file_location = $storage_location.$name;
         $date = date('Y-m-d H:i:s');
