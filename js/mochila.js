@@ -16,6 +16,10 @@ function Mochila(dagr_list, currDagr) {
                     mochila.displayDagrContents($(this).parent().attr("id"));
                 });
                 
+                $("#location-metadata").click(function() {
+                    mochila.displayDagrContents($("#guid-metadata").val());
+                });
+                
                 $(".dagr-item .view-dagr").click(function () {
                     console.log("Dagr Shown");
                     var dagrId = $(this).parent().parent().parent().attr("id");
@@ -131,6 +135,37 @@ function Mochila(dagr_list, currDagr) {
                     createSearchChoice: function(term){
                         return {id: "-1 "+term, value:term, text:term};
                     }
+                });
+                
+                $("#url-upload-submit").click(function(){
+                    var url = $("#dagr-url-upload").val();
+                    if(url.indexOf("http") != 0){
+                        url = "http://" + url;
+                    }
+                    
+                    var parent = $("#url-parent-dagr").val()
+                    
+                    $.ajax("dagrADD.php", {
+                        type: "GET",
+                        data: {
+                            q: url,
+                            title: null,
+                            tags: null,
+                            parentDagr: parent,
+                            parentOn: 1,
+                            author: null
+                        },
+                        error: function(){
+                            console.log("time to cry");
+                        },
+                        success: function(data, message, jqHXR){
+                            mochila.displayDagrContents(mochila.currDagr.guid);
+                        }
+                        
+                        
+                    });
+                    
+                    
                 });
             }
         },
@@ -280,6 +315,7 @@ Mochila.prototype.displayDagrMetaData = function(guid) {
         $("#date-metadata").html(dagr.date);
         $("#size-metadata").html(dagr.size);
         $("#type-metadata").html(dagr.file_type);
+        $("#location-metadata").html(dagr.location);
         $("#contents-container").attr("class", "col-md-10")
         $("#contents-container").addClass("col-md-offset-2");
         if(dagr.parentGuid != null){

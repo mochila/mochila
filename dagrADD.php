@@ -3,6 +3,7 @@
 
 include 'simple_html_dom.php';
 require_once("guidGenerator.php");
+require_once("common.php");
 
 function linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $linkTitle, $curLinkNum, $parentGUID, $mysqli) {
     $url_type_def = "url";
@@ -14,11 +15,11 @@ function linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $li
     
     
     $linkGUIDVALUE = guid();
-//    if ($linkFileType == 'img') {
-//        $linkTITLEVALUE = $parentTitle . '<img' . $curLinkNum . '>';
-//    } else {
-//        $linkTITLEVALUE = $parentTitle . '<link' . $curLinkNum . '>';
-//    }
+    //    if ($linkFileType == 'img') {
+    //        $linkTITLEVALUE = $parentTitle . '<img' . $curLinkNum . '>';
+    //    } else {
+    //        $linkTITLEVALUE = $parentTitle . '<link' . $curLinkNum . '>';
+    //    }
     $linkDATEVALUE = $linkDate;
     $linkSIZEVALUE = $linkSize;
     $linkFILETYPEVALUE = $linkFileType;
@@ -75,22 +76,32 @@ $dagrPGUID = NULL;
 /*************************************************************
     Get the parent DAGR if one was selected
 **************************************************************/
-if ($dagrPON == 1) {
-    $getParentStmt = $mysqli->prepare("Select DAGR_GUID from DAGRS where DAGR_TITLE = ?");
+if($dagrPD == "" || $dagrPD == "-1"){
+    $dagrPD = NULL;
+} else if(strpos($dagrPD, "-1 ") === 0){
     
-    // Bind parameters
-    $getParentStmt->bind_param("s", $dagrPDVALUE);
-    $dagrPDVALUE = $dagrPD;
-    $getParentStmt->bind_result($dagrPGUID);
+    $parent_title = substr($dagrPD, 3);
+    $dagrPD = guid();
+    dagr_add($dagrPD, $parent_title, date('Y-m-d H:i:s'), 0, "parent", "parent", NULL, $dagrAuthor, NULL); 
     
-    // Execute statement
-    $getParentStmt->execute();
-    
-    // Get the result
-    $getParentStmt->fetch();
-    
-    $getParentStmt->close();
 }
+
+//    $getParentStmt = $mysqli->prepare("Select DAGR_GUID from DAGRS where DAGR_TITLE = ?");
+//    
+//    // Bind parameters
+//    $getParentStmt->bind_param("s", $dagrPDVALUE);
+//    $dagrPDVALUE = $dagrPD;
+//    $getParentStmt->bind_result($dagrPGUID);
+//    
+//    // Execute statement
+//    $getParentStmt->execute();
+//    
+//    // Get the result
+//    $parent_dagr = $getParentStmt->fetch();
+//    
+//    $getParentStmt->close();
+$dagrPGUID = $dagrPD;
+
 
 /***************************************************************
     Use CURL to get the size and last modified date of html
@@ -224,7 +235,7 @@ foreach($linkList as $link) {
         $linkCurlinfo = curl_getinfo($linkCurl);
         
         $linkDateUNF = $linkCurlinfo['filetime'];
-        $linkSize = $linkCurlinfo['download_content_length'];
+        $linkSize = $linkCurlinfo['download_content_length']/1024;
         $linkDateUNF = curl_getinfo($linkCurl, CURLINFO_FILETIME);
         
         if ($linkSize == -1) {
@@ -269,7 +280,7 @@ foreach($html->find('img') as $image) {
     $imgCurlinfo = curl_getinfo($imgCurl);
     
     $imgDateUNF = $imgCurlinfo['filetime'];
-    $imgSize = $imgCurlinfo['download_content_length'];
+    $imgSize = $imgCurlinfo['download_content_length']/1024;
     $imgDateUNF = curl_getinfo($imgCurl, CURLINFO_FILETIME);
     
     if ($imgSize == -1) {
