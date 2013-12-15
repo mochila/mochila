@@ -11,6 +11,6 @@ if(file_exists($location)){
     
     
 }
-echo $location;
+echo "http://coffeecupcoding.com/".$location;
 
 ?>
