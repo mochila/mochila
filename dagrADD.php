@@ -4,6 +4,7 @@
 include 'simple_html_dom.php';
 require_once("guidGenerator.php");
 require_once("common.php");
+require_once("checkUniqueness.php");
 
 function linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $linkTitle, $curLinkNum, $parentGUID, $mysqli) {
     $url_type_def = "url";
@@ -154,46 +155,52 @@ if($dagrTitle == "" || $dagrTitle == null){
 // Prepare the statement
 
 $dagrPARENTTYPE = "parent";
-$stmt = $mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_TYPE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+if(!check_duplicate("url", $targetURL)){
+    
+
+
+
+    $stmt = $mysqli->prepare("INSERT INTO DAGRS (DAGR_GUID, DAGR_TITLE, DAGR_DATE, DAGR_SIZE, DAGR_TYPE, DAGR_FILE_TYPE, DAGR_FILE_LOC, DAGR_AUTHOR, DAGR_PARENT_GUID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // Bind the varaibles
-$stmt->bind_param("sssisssss", $dagrguidVALUE, $dagrtitleVALUE, $dagrdateVALUE, $dagrsizeVALUE, $dagrPARENTTYPE, $dagrtypeVALUE, $dagrlocVALUE, $dagrauthorVALUE, $dagrpguidVALUE);
+    $stmt->bind_param("sssisssss", $dagrguidVALUE, $dagrtitleVALUE, $dagrdateVALUE, $dagrsizeVALUE, $dagrPARENTTYPE, $dagrtypeVALUE, $dagrlocVALUE, $dagrauthorVALUE, $dagrpguidVALUE);
 
-$dagrguidVALUE = $dagrGUID;
-$dagrtitleVALUE = $dagrTitle;
-$dagrdateVALUE = $dagrDate;
-$dagrsizeVALUE = $dagrSize;
-$dagrtypeVALUE = $dagrType;
-$dagrlocVALUE = $targetURL;
-$dagrauthorVALUE = $dagrAuthor;
-$dagrpguidVALUE = $dagrPGUID;
+    $dagrguidVALUE = $dagrGUID;
+    $dagrtitleVALUE = $dagrTitle;
+    $dagrdateVALUE = $dagrDate;
+    $dagrsizeVALUE = $dagrSize;
+    $dagrtypeVALUE = $dagrType;
+    $dagrlocVALUE = $targetURL;
+    $dagrauthorVALUE = $dagrAuthor;
+    $dagrpguidVALUE = $dagrPGUID;
 
 // Execute the statement
-$stmt->execute();
-$stmt->close();
+    $stmt->execute();
+    $stmt->close();
 
 /***************************************************************
   Add the tags for the dagr to the TAGS tables
 ****************************************************************/
-if ($dagrTags != NULL) {
-    // Prepare the statement
-    $addTags = $mysqli->prepare("INSERT INTO TAGS (DAGR_GUID, TAG_TITLE) VALUES(?,?)");
+    if ($dagrTags != NULL) {
+	// Prepare the statement
+	$addTags = $mysqli->prepare("INSERT INTO TAGS (DAGR_GUID, TAG_TITLE) VALUES(?,?)");
     
-    // Bind the parameters
-    $addTags->bind_param("ss", $dagrGUIDVALUE, $tagVALUE);
-    $dagrGUIDVALUE = $dagrGUID;
+	// Bind the parameters
+	$addTags->bind_param("ss", $dagrGUIDVALUE, $tagVALUE);
+	$dagrGUIDVALUE = $dagrGUID;
     
-    // Split up the tags string into multiple strings
-    $allTags = explode(";", $dagrTags);
-    foreach ($allTags as $tag) {
-        $tagVALUE = $tag;
-        // Execute the statement
-        $addTags->execute();
+	// Split up the tags string into multiple strings
+	$allTags = explode(";", $dagrTags);
+	foreach ($allTags as $tag) {
+	    $tagVALUE = $tag;
+	    // Execute the statement
+	    $addTags->execute();
+	}
+    
+	// Close the statement
+	$addTags->close();
     }
-    
-    // Close the statement
-    $addTags->close();
-}
 
 /***************************************************************
   Add the GUID to the CHILD_DAGRS table if applicable
@@ -214,105 +221,106 @@ if ($dagrTags != NULL) {
 **************************************************************/
 
 // Get all external links
-$curLinkNum = 1;
-$linkregex = "#(https?|ftp)://.#";
-$linkList = $html->find('a');
-foreach($linkList as $link) {
-    if (preg_match($linkregex, $link->href)) {
-        // Get the link
-        $linkURL = $link->href;
+    $curLinkNum = 1;
+    $linkregex = "#(https?|ftp)://.#";
+    $linkList = $html->find('a');
+    foreach($linkList as $link) {
+	if (preg_match($linkregex, $link->href)) {
+	    // Get the link
+	    $linkURL = $link->href;
         
-        // Get the size  and date of the link
-        $linkCurl = curl_init($linkURL);
-        curl_setopt($linkCurl, CURLOPT_RETURNTRANSFER,TRUE);
-        curl_setopt($linkCurl, CURLOPT_HEADER,TRUE);
-        curl_setopt($linkCurl, CURLOPT_NOBODY,TRUE);
-        curl_setopt($linkCurl, CURLOPT_FILETIME,TRUE);
-        curl_setopt($linkCurl, CURLOPT_URL, $targetURL);
-        curl_setopt($linkCurl, CURLOPT_FOLLOWLOCATION, 1);
+	    // Get the size  and date of the link
+	    $linkCurl = curl_init($linkURL);
+	    curl_setopt($linkCurl, CURLOPT_RETURNTRANSFER,TRUE);
+	    curl_setopt($linkCurl, CURLOPT_HEADER,TRUE);
+	    curl_setopt($linkCurl, CURLOPT_NOBODY,TRUE);
+	    curl_setopt($linkCurl, CURLOPT_FILETIME,TRUE);
+	    curl_setopt($linkCurl, CURLOPT_URL, $targetURL);
+	    curl_setopt($linkCurl, CURLOPT_FOLLOWLOCATION, 1);
         
-        curl_exec($linkCurl);
-        $linkCurlinfo = curl_getinfo($linkCurl);
+	    curl_exec($linkCurl);
+	    $linkCurlinfo = curl_getinfo($linkCurl);
         
-        $linkDateUNF = $linkCurlinfo['filetime'];
-        $linkSize = $linkCurlinfo['download_content_length']/1024;
-        $linkDateUNF = curl_getinfo($linkCurl, CURLINFO_FILETIME);
+	    $linkDateUNF = $linkCurlinfo['filetime'];
+	    $linkSize = $linkCurlinfo['download_content_length']/1024;
+	    $linkDateUNF = curl_getinfo($linkCurl, CURLINFO_FILETIME);
         
-        if ($linkSize == -1) {
-            $linkSize = NULL;
-        }
+	    if ($linkSize == -1) {
+		$linkSize = NULL;
+	    }
         
-        if ($linkDateUNF == -1) {
-            $linkDateUNF = time();
-        }
+	    if ($linkDateUNF == -1) {
+		$linkDateUNF = time();
+	    }
         
-        $linkdt = new DateTime("@$linkDateUNF");
-        $linkDate = $linkdt->format('d/m/y');
+	    $linkdt = new DateTime("@$linkDateUNF");
+	    $linkDate = $linkdt->format('d/m/y');
         
-        curl_close($linkCurl);
+	    curl_close($linkCurl);
         
-        $linkAuthor = NULL;
-        $linkPGUID = $dagrGUID;
-        $linkFileType = 'HTML';
-        $linkTitle = trim($link->plaintext);
-        if($linkTitle == ""){
-            $linkTitle = $linkURL;
-        }
+	    $linkAuthor = NULL;
+	    $linkPGUID = $dagrGUID;
+	    $linkFileType = 'HTML';
+	    $linkTitle = trim($link->plaintext);
+	    if($linkTitle == ""){
+		$linkTitle = $linkURL;
+	    }
         
-        // Add the link to the database
-        linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $linkTitle, $curLinkNum, $linkPGUID, $mysqli);
-        $curLinkNum++;
+	    // Add the link to the database
+	    linkAdd($linkURL, $linkSize, $linkAuthor, $linkDate, $linkFileType, $linkTitle, $curLinkNum, $linkPGUID, $mysqli);
+	    $curLinkNum++;
+	}
     }
-}
 
 // Get all images
-$curlImgNum = 1;
-foreach($html->find('img') as $image) {
-    // Append the image src to the end of the targetURL
-    $imgURL = $targetURL . $image->src;
+    $curlImgNum = 1;
+    foreach($html->find('img') as $image) {
+	// Append the image src to the end of the targetURL
+	$imgURL = $targetURL . $image->src;
     
-    // Get the size and last modified date of image
-    $imgCurl = curl_init($imgURL);
-    curl_setopt($imgCurl, CURLOPT_RETURNTRANSFER,TRUE);
-    curl_setopt($imgCurl, CURLOPT_HEADER,TRUE);
-    curl_setopt($imgCurl, CURLOPT_NOBODY,TRUE);
-    curl_setopt($imgCurl, CURLOPT_FILETIME,TRUE);
+	// Get the size and last modified date of image
+	$imgCurl = curl_init($imgURL);
+	curl_setopt($imgCurl, CURLOPT_RETURNTRANSFER,TRUE);
+	curl_setopt($imgCurl, CURLOPT_HEADER,TRUE);
+	curl_setopt($imgCurl, CURLOPT_NOBODY,TRUE);
+	curl_setopt($imgCurl, CURLOPT_FILETIME,TRUE);
     
     
-    curl_exec($imgCurl);
-    $imgCurlinfo = curl_getinfo($imgCurl);
+	curl_exec($imgCurl);
+	$imgCurlinfo = curl_getinfo($imgCurl);
     
-    $imgDateUNF = $imgCurlinfo['filetime'];
-    $imgSize = $imgCurlinfo['download_content_length']/1024;
-    $imgDateUNF = curl_getinfo($imgCurl, CURLINFO_FILETIME);
+	$imgDateUNF = $imgCurlinfo['filetime'];
+	$imgSize = $imgCurlinfo['download_content_length']/1024;
+	$imgDateUNF = curl_getinfo($imgCurl, CURLINFO_FILETIME);
     
-    if ($imgSize == -1) {
-        $imgSize = NULL;
-    }
+	if ($imgSize == -1) {
+	    $imgSize = NULL;
+	}
     
-    if ($imgDateUNF == -1) {
-        $imgDateUNF = time();
-    }
-    
-    $imgdt = new DateTime("@$imgDateUNF");
-    $imgDate = $imgdt->format('d/m/y');
-    
-    curl_close($imgCurl);  
-    
-    // Get the author, parent GUID, and file type
-    $imgAuthor = NULL;
-    $imgPGUID = $dagrGUID;
-    $imgFileType = 'img';
-    $imageTitle = trim($image->alt);
-    if($imageTitle == ""){
-        $imageTitle = $imgURL;
-    }
-    
-    // Add the image to the DAGR table
-    linkAdd($imgURL, $imgSize, $imgAuthor, $imgDate, $imgFileType, $imageTitle, $curlImgNum, $imgPGUID, $mysqli);
-    $curlImgNum++;
-}
+	if ($imgDateUNF == -1) {
+	    $imgDateUNF = time();
+	}
 
+	
+	$imgdt = new DateTime("@$imgDateUNF");
+	$imgDate = $imgdt->format('d/m/y');
+    
+	curl_close($imgCurl);  
+    
+	// Get the author, parent GUID, and file type
+	$imgAuthor = NULL;
+	$imgPGUID = $dagrGUID;
+	$imgFileType = 'img';
+	$imageTitle = trim($image->alt);
+	if($imageTitle == ""){
+	    $imageTitle = $imgURL;
+	}
+    
+	// Add the image to the DAGR table
+	linkAdd($imgURL, $imgSize, $imgAuthor, $imgDate, $imgFileType, $imageTitle, $curlImgNum, $imgPGUID, $mysqli);
+	$curlImgNum++;
+    }
+}
 /***************************************************************
   Echo the variables back to the client
 ***************************************************************/
@@ -320,5 +328,6 @@ foreach($html->find('img') as $image) {
 $responseMessage = "Received URL: $targetURL\nDAGR Title: $dagrTitle\nDAGR Tags: $dagrTags\nDAGR GUID: $dagrGUID\nDAGR Date: $dagrDate\nDAGR Size: $dagrSize\nDAGR Author: $dagrAuthor\nDAGR PGUID: $dagrPGUID\n";
 echo $responseMessage;
 echo "worked";
+
 ?>
 

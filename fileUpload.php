@@ -1,7 +1,7 @@
 <?php
 require_once("guidGenerator.php");
 require_once("common.php");
-
+require_once("checkUniqueness.php");
 
 //dagr_add("1234", "Random", "2013-12-12", "10000000", "file", "pdf", "adfadf"."/"."1234", "WARE", "4");
 
@@ -36,26 +36,32 @@ foreach($_FILES["user-files"]["error"] as $key=>$error){
         $dagr_type = "file";
         $file_location = $storage_location.$name;
         $date = date('Y-m-d H:i:s');
+
+
+	if(!check_duplicate("file", $tmp_name)){
+
+	
+	    //Check if parent exists else create the directory
+	    if(!(file_exists($storage_location))){
+		mkdir($storage_location);
+		chmod($storage_location, 0777);
+	    }
         
-        //Check if parent exists else create the directory
-        if(!(file_exists($storage_location))){
-            mkdir($storage_location);
-            chmod($storage_location, 0777);
-        }
         
         
         
+	    // Move to permanent Storage
+	    $worked = move_uploaded_file($tmp_name, $storage_location."/".$name);
         
-        // Move to permanent Storage
-        $worked = move_uploaded_file($tmp_name, $storage_location."/".$name);
+	    //Add Dagr
+	    if($worked){
+		chmod($storage_location."/".$name, 0777);
+		dagr_add($guid, $name, $date, $size, $dagr_type, $type, $storage_location."/".$name, $author, $parent_guid);
+	    }
         
-        //Add Dagr
-        if($worked){
-            chmod($storage_location."/".$name, 0777);
-            dagr_add($guid, $name, $date, $size, $dagr_type, $type, $storage_location."/".$name, $author, $parent_guid);
-        }
-        
+	}
     }
+	
 }
 
 header("Location: ".$curr_url);
