@@ -17,7 +17,7 @@ function Mochila(dagr_list, currDagr) {
                 });
                 
                 $("#location-metadata").click(function() {
-                    mochila.displayDagrContents($("#guid-metadata").val());
+                    mochila.contentsDisplay($("#guid-metadata").val());
                 });
                 
                 $(".dagr-item .view-dagr").click(function () {
@@ -280,6 +280,16 @@ Mochila.prototype.displayParentDagr = function(guid) {
     } else {
         window.location.href = "getDagr.php";
     }
+}
+
+Mochila.prototype.contentsDisplay = function(guid){
+    var dagr = this.getDagr(guid);
+    if(dagr.type == "parent"){
+        this.displayUrl(dagr.location);
+    } else {
+        this.displayDagrContents(guid);
+    }
+
 }
 
 Mochila.prototype.displayFile = function(fileLocation){
