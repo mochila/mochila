@@ -7,7 +7,7 @@ function check_duplicate($new_type, $new_location){
     $is_duplicate = false;
     $db = new mysqli("localhost", "root", "dude1313", "mochila_db");
 
-    $statement = $db->prepare("select DAGR_GUID, DAGR_FILE_LOC, DAGR_TYPE, DAGR_SIZE from DAGRS where DAGR_TYPE LIKE ?");
+    $statement = $db->prepare("select DAGR_GUID, DAGR_FILE_LOC, DAGR_TYPE, DAGR_SIZE from DAGRS where DAGR_TYPE LIKE ? || DAGR_TYPE ='parent'");
     $statement->bind_param("s", $new_type);
 
     $statement->bind_result($guid, $location, $type, $size);
@@ -15,7 +15,7 @@ function check_duplicate($new_type, $new_location){
 
     $new_hash_value = null;
 
-    if($new_type == file){
+    if($new_type == "file"){
 	$new_hash_value = hash_file("md5", $new_location);
     } else {
 	$new_hash_value = hash("md5", $new_location);
@@ -37,13 +37,15 @@ function check_duplicate($new_type, $new_location){
 	    $is_duplicate = true;
 	    break;
 	}
+
+	//echo $new_location." == ".$location;
     }
 
-    return $is_duplicate;
     $db->close();
+    return $is_duplicate;
+
     
   }
-
 
 
 // Add primary index that deletes duplicates for DAGR_FILE_LOC
@@ -60,4 +62,4 @@ function check_duplicate($new_type, $new_location){
 
 /* // Any tuples in DAGRS where the PARENT_GUID is no longer in DAGRS, set PARENT_GUID to NULL */
 /* $mysli->query("UPDATE DAGRS SET DAGR_PARENT_GUID=NULL WHERE DAGR_PARENT_GUID NOT IN(SELECT PARENT_GUID FROM CHILD_DAGRS)"); */
-?>
+    ?>

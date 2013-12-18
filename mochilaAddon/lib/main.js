@@ -1,5 +1,5 @@
 var data = require("sdk/self").data;
-var tabs = require('tabs');
+var tabs = require('sdk/tabs');
 var Request = require("sdk/request").Request;
  
 // Create a panel whose content is defined in "text-entry.html".
